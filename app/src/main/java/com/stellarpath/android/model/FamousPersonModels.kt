@@ -2,6 +2,8 @@ package com.stellarpath.android.model
 
 import java.time.LocalDate
 
+// BirthLocation is defined in ProfileModels.kt — do NOT redeclare it here.
+
 data class FamousPerson(
     val id: String,
     val name: String,
@@ -26,14 +28,5 @@ enum class PersonCategory {
     Athlete,
     BusinessLeader,
     Explorer,
-    Other
+    Other,
 }
-
-data class BirthLocation(
-    val city: String,
-    val region: String? = null,
-    val countryCode: String,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
-    val timezoneId: String? = null,
-)

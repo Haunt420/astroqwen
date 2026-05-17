@@ -218,7 +218,7 @@ object SampleAstroData {
             title = "Solar eclipse",
             date = LocalDate.now().plusDays(18),
             type = SpecialEventType.Eclipse,
-            summary = "A compact reset point with strong emphasis on the profile’s public-facing themes.",
+            summary = "A compact reset point with strong emphasis on the profile's public-facing themes.",
         ),
         SpecialEvent(
             id = "solstice-2026",
@@ -240,18 +240,10 @@ object SampleAstroData {
         ReferenceTopic(
             id = "elements",
             title = "Elements",
-            summary = "Fire, Earth, Air, and Water describe the chart’s base temperament.",
+            summary = "Fire, Earth, Air, and Water describe the chart's base temperament.",
             sections = listOf(
-                ReferenceSection(
-                    id = "fire",
-                    title = "Fire",
-                    body = "Direct, expressive, fast to start, and motivated by momentum.",
-                ),
-                ReferenceSection(
-                    id = "earth",
-                    title = "Earth",
-                    body = "Concrete, patient, stabilizing, and tuned to results that last.",
-                ),
+                ReferenceSection(id = "fire", title = "Fire", body = "Direct, expressive, fast to start, and motivated by momentum."),
+                ReferenceSection(id = "earth", title = "Earth", body = "Concrete, patient, stabilizing, and tuned to results that last."),
             ),
         ),
         ReferenceTopic(
@@ -259,16 +251,8 @@ object SampleAstroData {
             title = "Qualities",
             summary = "Cardinal, Fixed, and Mutable describe how energy moves.",
             sections = listOf(
-                ReferenceSection(
-                    id = "cardinal",
-                    title = "Cardinal",
-                    body = "Initiates and pushes things into motion.",
-                ),
-                ReferenceSection(
-                    id = "mutable",
-                    title = "Mutable",
-                    body = "Adapts, reframes, and changes shape to fit context.",
-                ),
+                ReferenceSection(id = "cardinal", title = "Cardinal", body = "Initiates and pushes things into motion."),
+                ReferenceSection(id = "mutable", title = "Mutable", body = "Adapts, reframes, and changes shape to fit context."),
             ),
         ),
         ReferenceTopic(
@@ -276,11 +260,7 @@ object SampleAstroData {
             title = "Dualities",
             summary = "Positive/negative, wet/dry, and other paired lenses help explain chart balance.",
             sections = listOf(
-                ReferenceSection(
-                    id = "yang",
-                    title = "Yang and Yin",
-                    body = "Outgoing and receptive describe how energy tends to express itself.",
-                ),
+                ReferenceSection(id = "yang", title = "Yang and Yin", body = "Outgoing and receptive describe how energy tends to express itself."),
             ),
         ),
         ReferenceTopic(
@@ -288,16 +268,8 @@ object SampleAstroData {
             title = "House systems",
             summary = "House systems shift how life areas are segmented and interpreted.",
             sections = listOf(
-                ReferenceSection(
-                    id = "placidus",
-                    title = "Placidus",
-                    body = "A popular time-based system that many chart readers use by default.",
-                ),
-                ReferenceSection(
-                    id = "whole-sign",
-                    title = "Whole sign",
-                    body = "Each sign becomes an entire house, creating a clean one-sign-one-house structure.",
-                ),
+                ReferenceSection(id = "placidus", title = "Placidus", body = "A popular time-based system that many chart readers use by default."),
+                ReferenceSection(id = "whole-sign", title = "Whole sign", body = "Each sign becomes an entire house, creating a clean one-sign-one-house structure."),
             ),
         ),
         ReferenceTopic(
@@ -305,11 +277,7 @@ object SampleAstroData {
             title = "Special events",
             summary = "Eclipses, retrogrades, solstices, equinoxes, and planetary birthdays carry timing significance.",
             sections = listOf(
-                ReferenceSection(
-                    id = "retrograde",
-                    title = "Retrograde",
-                    body = "A review cycle that asks for revision, patience, and close reading of details.",
-                ),
+                ReferenceSection(id = "retrograde", title = "Retrograde", body = "A review cycle that asks for revision, patience, and close reading of details."),
             ),
         ),
         ReferenceTopic(
@@ -317,18 +285,8 @@ object SampleAstroData {
             title = "Planet meanings",
             summary = "The bodies in the chart describe different functions, drives, and response patterns.",
             sections = listOf(
-                ReferenceSection(
-                    id = "sun",
-                    title = "Sun",
-                    body = "Identity, vitality, and the central organizing principle.",
-                    relatedBodies = listOf(AstrologyBody.Sun),
-                ),
-                ReferenceSection(
-                    id = "moon",
-                    title = "Moon",
-                    body = "Mood, instinct, comfort, and immediate emotional response.",
-                    relatedBodies = listOf(AstrologyBody.Moon),
-                ),
+                ReferenceSection(id = "sun", title = "Sun", body = "Identity, vitality, and the central organizing principle.", relatedBodies = listOf(AstrologyBody.Sun)),
+                ReferenceSection(id = "moon", title = "Moon", body = "Mood, instinct, comfort, and immediate emotional response.", relatedBodies = listOf(AstrologyBody.Moon)),
             ),
         ),
     )
@@ -359,13 +317,49 @@ object SampleAstroData {
 
     fun readingFor(profileId: String): DailyReading = readings[profileId] ?: readings.getValue("self")
 
-    fun profileById(profileId: String): BirthProfile = profiles.firstOrNull { it.id == profileId } ?: profiles.first()
+    fun profileById(profileId: String): BirthProfile =
+        profiles.firstOrNull { it.id == profileId } ?: profiles.first()
 
     fun referenceTopic(topicId: String): ReferenceTopic =
         referenceTopics.firstOrNull { it.id == topicId } ?: referenceTopics.first()
 
     fun specialEvent(eventId: String): SpecialEvent =
         specialEvents.firstOrNull { it.id == eventId } ?: specialEvents.first()
+
+    /** Returns a natal chart overlaid with sample transit placements for the given date. */
+    fun transitChartFor(profileId: String, date: LocalDate): ChartSnapshot {
+        val natal = chartFor(profileId)
+        val dayOffset = (date.toEpochDay() % 30).toFloat() / 30f
+        val transitPlacements = listOf(
+            ChartPlacement(AstrologyBody.Sun, ZodiacSign.entries[((date.monthValue + 2) % 12)], 10.0 + dayOffset * 28, house = null),
+            ChartPlacement(AstrologyBody.Moon, ZodiacSign.entries[((date.dayOfMonth) % 12)], 5.0 + dayOffset * 25, house = null),
+            ChartPlacement(AstrologyBody.Mercury, ZodiacSign.entries[((date.monthValue + 1) % 12)], 18.0 + dayOffset * 22, house = null),
+            ChartPlacement(AstrologyBody.Venus, ZodiacSign.entries[((date.monthValue + 3) % 12)], 8.0 + dayOffset * 15, house = null),
+            ChartPlacement(AstrologyBody.Mars, ZodiacSign.entries[((date.monthValue + 5) % 12)], 22.0 + dayOffset * 12, house = null),
+            ChartPlacement(AstrologyBody.Jupiter, ZodiacSign.Taurus, 15.0 + dayOffset * 2, house = null),
+            ChartPlacement(AstrologyBody.Saturn, ZodiacSign.Pisces, 11.0 + dayOffset * 1, house = null),
+        )
+        val transitAspects = listOf(
+            Aspect(AstrologyBody.Sun, AstrologyBody.Moon, AspectType.Trine, 1.4),
+            Aspect(AstrologyBody.Mercury, AstrologyBody.Saturn, AspectType.Conjunction, 0.8),
+            Aspect(AstrologyBody.Venus, AstrologyBody.Mars, AspectType.Square, 2.2),
+            Aspect(AstrologyBody.Jupiter, AstrologyBody.Sun, AspectType.Sextile, 1.1),
+        )
+        return natal.copy(
+            transitPlacements = transitPlacements,
+            transitAspects = transitAspects,
+        )
+    }
+
+    fun transitReadingFor(profileId: String, date: LocalDate): DailyReading {
+        val base = readingFor(profileId)
+        return base.copy(
+            date = date,
+            headline = if (date == LocalDate.now()) base.headline else "Transit reading for $date",
+            summary = if (date == LocalDate.now()) base.summary
+            else "The planetary positions on this date activate themes around timing, clarity, and forward motion.",
+        )
+    }
 
     fun buildCompatibilityReport(primaryId: String, secondaryId: String): CompatibilityReport {
         val primary = profileById(primaryId)
@@ -391,6 +385,7 @@ object SampleAstroData {
             ),
             passion = CompatibilityDimension(
                 type = CompatibilityDimensionType.Passion,
+                label = "Passion",
                 score = 91,
                 summary = "There is strong charge and curiosity here.",
                 details = "The Venus/Mars axis is energetic, giving the connection a visible spark and strong pull.",

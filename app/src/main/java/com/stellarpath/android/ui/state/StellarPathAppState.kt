@@ -13,6 +13,7 @@ import com.stellarpath.android.model.BirthProfile
 import com.stellarpath.android.model.ChartSnapshot
 import com.stellarpath.android.model.CompatibilityReport
 import com.stellarpath.android.model.DailyReading
+import com.stellarpath.android.model.HouseSystem
 import com.stellarpath.android.model.ReferenceTopic
 import com.stellarpath.android.model.SpecialEvent
 import com.stellarpath.android.model.SubscriptionEntitlement
@@ -69,7 +70,7 @@ class StellarPathAppState {
         settings = settings.copy(themeMode = themeMode)
     }
 
-    fun updateDefaultHouseSystem(houseSystem: com.stellarpath.android.model.HouseSystem) {
+    fun updateDefaultHouseSystem(houseSystem: HouseSystem) {
         settings = settings.copy(defaultHouseSystem = houseSystem)
     }
 
@@ -106,7 +107,15 @@ class StellarPathAppState {
 
     fun chart(profileId: String): ChartSnapshot = sample.chartFor(profileId)
 
+    /** Natal chart overlaid with transit positions for the given date. */
+    fun transitChart(profileId: String, date: LocalDate): ChartSnapshot =
+        sample.transitChartFor(profileId, date)
+
     fun reading(profileId: String): DailyReading = sample.readingFor(profileId)
+
+    /** Daily reading adjusted for the selected transit date. */
+    fun transitReading(profileId: String, date: LocalDate): DailyReading =
+        sample.transitReadingFor(profileId, date)
 
     fun compatibilityReport(): CompatibilityReport =
         sample.buildCompatibilityReport(selectedCompatibilityPrimaryId, selectedCompatibilitySecondaryId)

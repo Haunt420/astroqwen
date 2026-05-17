@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.stellarpath.android.ui.screens.ChartScreen
 import com.stellarpath.android.ui.screens.CompatibilityScreen
 import com.stellarpath.android.ui.screens.EventDetailScreen
+import com.stellarpath.android.ui.screens.FamousPeopleScreen
 import com.stellarpath.android.ui.screens.HomeScreen
 import com.stellarpath.android.ui.screens.LibraryDetailScreen
 import com.stellarpath.android.ui.screens.LibraryScreen
@@ -142,6 +143,15 @@ fun AppNavGraph(
             )
         }
 
+        composable(Routes.FamousPeople) {
+            FamousPeopleScreen(
+                onBack = { navController.popBackStack() },
+                onOpenProfileDetail = { personId ->
+                    navController.navigate(Routes.profileDetail(personId))
+                },
+            )
+        }
+
         composable(Routes.Settings) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
@@ -174,9 +184,7 @@ fun AppNavGraph(
             ProfileEditorScreen(
                 profileId = profileId,
                 onBack = { navController.popBackStack() },
-                onSaveProfile = {
-                    navController.popBackStack()
-                },
+                onSaveProfile = { navController.popBackStack() },
             )
         }
 

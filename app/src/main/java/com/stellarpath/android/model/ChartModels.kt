@@ -4,54 +4,23 @@ import androidx.compose.runtime.Immutable
 import java.time.Instant
 
 enum class ZodiacSign {
-    Aries,
-    Taurus,
-    Gemini,
-    Cancer,
-    Leo,
-    Virgo,
-    Libra,
-    Scorpio,
-    Sagittarius,
-    Capricorn,
-    Aquarius,
-    Pisces,
+    Aries, Taurus, Gemini, Cancer, Leo, Virgo,
+    Libra, Scorpio, Sagittarius, Capricorn, Aquarius, Pisces,
 }
 
 enum class AstrologyBody {
-    Sun,
-    Moon,
-    Mercury,
-    Venus,
-    Mars,
-    Jupiter,
-    Saturn,
-    Uranus,
-    Neptune,
-    Pluto,
-    NorthNode,
-    SouthNode,
-    Chiron,
-    Lilith,
-    Ascendant,
-    Midheaven,
+    Sun, Moon, Mercury, Venus, Mars, Jupiter, Saturn,
+    Uranus, Neptune, Pluto, NorthNode, SouthNode,
+    Chiron, Lilith, Ascendant, Midheaven,
 }
 
 enum class AspectType {
-    Conjunction,
-    Opposition,
-    Trine,
-    Square,
-    Sextile,
-    Quincunx,
-    Semisextile,
-    Quintile,
+    Conjunction, Opposition, Trine, Square,
+    Sextile, Quincunx, Semisextile, Quintile,
 }
 
 enum class ChartPrecision {
-    Exact,
-    Estimated,
-    UnknownTime,
+    Exact, Estimated, UnknownTime,
 }
 
 @Immutable
@@ -95,4 +64,7 @@ data class ChartSnapshot(
     val aspects: List<Aspect> = emptyList(),
     val houses: List<HouseCusp> = emptyList(),
     val summary: ChartSummary? = null,
+    // Transit overlay fields — null when this is a pure natal chart
+    val transitPlacements: List<ChartPlacement>? = null,
+    val transitAspects: List<Aspect>? = null,
 )
