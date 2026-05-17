@@ -1,0 +1,603 @@
+package com.stellarpath.android.data
+
+import com.stellarpath.android.model.BirthLocation
+import com.stellarpath.android.model.FamousPerson
+import com.stellarpath.android.model.PersonCategory
+import java.time.LocalDate
+
+object FamousPeopleDatabase {
+    
+    val famousPeople: List<FamousPerson> = listOf(
+        // Philosophers
+        FamousPerson(
+            id = "socrates",
+            name = "Socrates",
+            birthDate = LocalDate.of(-470, 6, 15),
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Athens", countryCode = "GR"),
+            notes = "Classical Greek philosopher"
+        ),
+        FamousPerson(
+            id = "plato",
+            name = "Plato",
+            birthDate = LocalDate.of(-428, 10, 28),
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Athens", countryCode = "GR"),
+            notes = "Classical Greek philosopher"
+        ),
+        FamousPerson(
+            id = "aristotle",
+            name = "Aristotle",
+            birthDate = LocalDate.of(-384, 1, 1),
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Stagira", region = "Chalcidice", countryCode = "GR"),
+            notes = "Classical Greek philosopher"
+        ),
+        FamousPerson(
+            id = "confucius",
+            name = "Confucius",
+            birthDate = LocalDate.of(-551, 9, 28),
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Qufu", region = "Shandong", countryCode = "CN"),
+            notes = "Chinese philosopher"
+        ),
+        FamousPerson(
+            id = "laozi",
+            name = "Lao Tzu",
+            birthDate = LocalDate.of(-604, 1, 1),
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Lao River", region = "Henan", countryCode = "CN"),
+            notes = "Founder of Taoism"
+        ),
+        FamousPerson(
+            id = "immanuel_kant",
+            name = "Immanuel Kant",
+            birthDate = LocalDate.of(1724, 4, 22),
+            birthTime = "14:30",
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Königsberg", region = "Prussia", countryCode = "DE", latitude = 54.7167, longitude = 20.5000),
+            notes = "German philosopher"
+        ),
+        FamousPerson(
+            id = "gwf_hegel",
+            name = "G.W.F. Hegel",
+            birthDate = LocalDate.of(1770, 8, 27),
+            birthTime = "09:00",
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Stuttgart", region = "Württemberg", countryCode = "DE"),
+            notes = "German philosopher"
+        ),
+        FamousPerson(
+            id = "aristotle",
+            name = "Friedrich Nietzsche",
+            birthDate = LocalDate.of(1844, 10, 15),
+            birthTime = "10:00",
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Röcken", region = "Saxony", countryCode = "DE"),
+            notes = "German philosopher"
+        ),
+        FamousPerson(
+            id = "jean_paul_sartre",
+            name = "Jean-Paul Sartre",
+            birthDate = LocalDate.of(1905, 6, 21),
+            birthTime = "08:00",
+            profession = "Philosopher",
+            category = PersonCategory.Philosopher,
+            birthLocation = BirthLocation(city = "Paris", countryCode = "FR"),
+            notes = "French philosopher"
+        ),
+        
+        // Warriors & Military Leaders
+        FamousPerson(
+            id = "alexander_great",
+            name = "Alexander the Great",
+            birthDate = LocalDate.of(-356, 7, 20),
+            profession = "Military Leader",
+            category = PersonCategory.Warrior,
+            birthLocation = BirthLocation(city = "Pella", region = "Macedonia", countryCode = "GR"),
+            notes = "King of Macedon"
+        ),
+        FamousPerson(
+            id = "julius_caesar",
+            name = "Julius Caesar",
+            birthDate = LocalDate.of(-100, 7, 13),
+            profession = "Military Leader",
+            category = PersonCategory.Warrior,
+            birthLocation = BirthLocation(city = "Rome", countryCode = "IT"),
+            notes = "Roman dictator"
+        ),
+        FamousPerson(
+            id = "napoleon",
+            name = "Napoleon Bonaparte",
+            birthDate = LocalDate.of(1769, 8, 15),
+            birthTime = "11:00",
+            profession = "Military Leader",
+            category = PersonCategory.Warrior,
+            birthLocation = BirthLocation(city = "Ajaccio", region = "Corsica", countryCode = "FR"),
+            notes = "French Emperor"
+        ),
+        FamousPerson(
+            id = "genghis_khan",
+            name = "Genghis Khan",
+            birthDate = LocalDate.of(1162, 1, 1),
+            profession = "Military Leader",
+            category = PersonCategory.Warrior,
+            birthLocation = BirthLocation(city = "Deli Bold", region = "Mongolia", countryCode = "MN"),
+            notes = "Founder of Mongol Empire"
+        ),
+        FamousPerson(
+            id = "cleopatra",
+            name = "Cleopatra VII",
+            birthDate = LocalDate.of(-69, 12, 1),
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Alexandria", countryCode = "EG"),
+            notes = "Queen of Ptolemaic Egypt"
+        ),
+        FamousPerson(
+            id = "caesar_rodney",
+            name = "Caesar Rodney",
+            birthDate = LocalDate.of(1728, 10, 20),
+            profession = "Military Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Dover", region = "Delaware", countryCode = "US"),
+            notes = "American Revolutionary War leader"
+        ),
+        
+        // Musicians
+        FamousPerson(
+            id = "mozart",
+            name = "Wolfgang Amadeus Mozart",
+            birthDate = LocalDate.of(1756, 1, 27),
+            birthTime = "20:00",
+            profession = "Composer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Salzburg", countryCode = "AT"),
+            notes = "Austrian composer"
+        ),
+        FamousPerson(
+            id = "beethoven",
+            name = "Ludwig van Beethoven",
+            birthDate = LocalDate.of(1770, 12, 17),
+            birthTime = "01:30",
+            profession = "Composer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Bonn", region = "Germany", countryCode = "DE"),
+            notes = "German composer"
+        ),
+        FamousPerson(
+            id = "bach",
+            name = "Johann Sebastian Bach",
+            birthDate = LocalDate.of(1685, 3, 31),
+            profession = "Composer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Eisenach", countryCode = "DE"),
+            notes = "German composer"
+        ),
+        FamousPerson(
+            id = "chopin",
+            name = "Frederic Chopin",
+            birthDate = LocalDate.of(1810, 3, 1),
+            birthTime = "00:00",
+            profession = "Composer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Zelazowa Wola", region = "Poland", countryCode = "PL"),
+            notes = "Polish composer and pianist"
+        ),
+        FamousPerson(
+            id = "tchaikovsky",
+            name = "Pyotr Ilyich Tchaikovsky",
+            birthDate = LocalDate.of(1840, 5, 7),
+            birthTime = "08:00",
+            profession = "Composer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Votkinsk", region = "Udmurtia", countryCode = "RU"),
+            notes = "Russian composer"
+        ),
+        FamousPerson(
+            id = "elvis_presley",
+            name = "Elvis Presley",
+            birthDate = LocalDate.of(1935, 1, 8),
+            birthTime = "04:35",
+            profession = "Singer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Tupelo", region = "Mississippi", countryCode = "US"),
+            notes = "The King of Rock and Roll"
+        ),
+        FamousPerson(
+            id = "michael_jackson",
+            name = "Michael Jackson",
+            birthDate = LocalDate.of(1958, 8, 29),
+            birthTime = "23:15",
+            profession = "Singer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Gary", region = "Indiana", countryCode = "US"),
+            notes = "King of Pop"
+        ),
+        FamousPerson(
+            id = "john_lennon",
+            name = "John Lennon",
+            birthDate = LocalDate.of(1940, 10, 9),
+            birthTime = "22:30",
+            profession = "Singer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Liverpool", countryCode = "GB"),
+            notes = "The Beatles"
+        ),
+        FamousPerson(
+            id = "bob_marley",
+            name = "Bob Marley",
+            birthDate = LocalDate.of(1945, 2, 6),
+            birthTime = "02:00",
+            profession = "Singer",
+            category = PersonCategory.Musician,
+            birthLocation = BirthLocation(city = "Nine Mile", region = "St. Ann", countryCode = "JM"),
+            notes = "Jamaican reggae legend"
+        ),
+        
+        // Artists
+        FamousPerson(
+            id = "leonardo_davinci",
+            name = "Leonardo da Vinci",
+            birthDate = LocalDate.of(1452, 4, 15),
+            profession = "Artist",
+            category = PersonCategory.Artist,
+            birthLocation = BirthLocation(city = "Vinci", region = "Tuscany", countryCode = "IT"),
+            notes = "Renaissance polymath"
+        ),
+        FamousPerson(
+            id = "michelangelo",
+            name = "Michelangelo Buonarroti",
+            birthDate = LocalDate.of(1475, 3, 6),
+            profession = "Artist",
+            category = PersonCategory.Artist,
+            birthLocation = BirthLocation(city = "Caprese", region = "Tuscany", countryCode = "IT"),
+            notes = "Renaissance sculptor and painter"
+        ),
+        FamousPerson(
+            id = "rembrandt",
+            name = "Rembrandt van Rijn",
+            birthDate = LocalDate.of(1606, 7, 15),
+            profession = "Artist",
+            category = PersonCategory.Artist,
+            birthLocation = BirthLocation(city = "Leiden", countryCode = "NL"),
+            notes = "Dutch painter"
+        ),
+        FamousPerson(
+            id = "picasso",
+            name = "Pablo Picasso",
+            birthDate = LocalDate.of(1881, 10, 25),
+            birthTime = "23:15",
+            profession = "Artist",
+            category = PersonCategory.Artist,
+            birthLocation = BirthLocation(city = "Málaga", countryCode = "ES"),
+            notes = "Spanish painter"
+        ),
+        FamousPerson(
+            id = "vincent_van_gogh",
+            name = "Vincent van Gogh",
+            birthDate = LocalDate.of(1853, 3, 30),
+            birthTime = "11:00",
+            profession = "Artist",
+            category = PersonCategory.Artist,
+            birthLocation = BirthLocation(city = "Zundert", region = "Netherlands", countryCode = "NL"),
+            notes = "Dutch painter"
+        ),
+        
+        // Authors
+        FamousPerson(
+            id = "shakespeare",
+            name = "William Shakespeare",
+            birthDate = LocalDate.of(1564, 4, 23),
+            profession = "Playwright",
+            category = PersonCategory.Author,
+            birthLocation = BirthLocation(city = "Stratford-upon-Avon", countryCode = "GB"),
+            notes = "English playwright"
+        ),
+        FamousPerson(
+            id = "cervantes",
+            name = "Miguel de Cervantes",
+            birthDate = LocalDate.of(1547, 9, 29),
+            profession = "Author",
+            category = PersonCategory.Author,
+            birthLocation = BirthLocation(city = "Alcalá de Henares", countryCode = "ES"),
+            notes = "Spanish author"
+        ),
+        FamousPerson(
+            id = "tolstoy",
+            name = "Leo Tolstoy",
+            birthDate = LocalDate.of(1828, 9, 9),
+            birthTime = "12:00",
+            profession = "Author",
+            category = PersonCategory.Author,
+            birthLocation = BirthLocation(city = "Yasnaya Polyana", region = "Tula", countryCode = "RU"),
+            notes = "Russian author"
+        ),
+        FamousPerson(
+            id = "mark_twain",
+            name = "Mark Twain",
+            birthDate = LocalDate.of(1835, 11, 30),
+            birthTime = "03:00",
+            profession = "Author",
+            category = PersonCategory.Author,
+            birthLocation = BirthLocation(city = "Florida", region = "Missouri", countryCode = "US"),
+            notes = "American author"
+        ),
+        FamousPerson(
+            id = "jane_austen",
+            name = "Jane Austen",
+            birthDate = LocalDate.of(1775, 12, 16),
+            profession = "Author",
+            category = PersonCategory.Author,
+            birthLocation = BirthLocation(city = "Steventon", region = "Hampshire", countryCode = "GB"),
+            notes = "English novelist"
+        ),
+        
+        // Actors
+        FamousPerson(
+            id = "marilyn_monroe",
+            name = "Marilyn Monroe",
+            birthDate = LocalDate.of(1926, 6, 1),
+            birthTime = "09:30",
+            profession = "Actress",
+            category = PersonCategory.Actor,
+            birthLocation = BirthLocation(city = "Los Angeles", region = "California", countryCode = "US"),
+            notes = "American actress"
+        ),
+        FamousPerson(
+            id = "audrey_hepburn",
+            name = "Audrey Hepburn",
+            birthDate = LocalDate.of(1929, 5, 4),
+            birthTime = "18:30",
+            profession = "Actress",
+            category = PersonCategory.Actor,
+            birthLocation = BirthLocation(city = "Brussels", countryCode = "BE"),
+            notes = "British actress"
+        ),
+        FamousPerson(
+            id = "james_dean",
+            name = "James Dean",
+            birthDate = LocalDate.of(1931, 2, 8),
+            birthTime = "01:00",
+            profession = "Actor",
+            category = PersonCategory.Actor,
+            birthLocation = BirthLocation(city = "Marion", region = "Indiana", countryCode = "US"),
+            notes = "American actor"
+        ),
+        
+        // Scientists
+        FamousPerson(
+            id = "newton",
+            name = "Isaac Newton",
+            birthDate = LocalDate.of(1643, 1, 4),
+            profession = "Scientist",
+            category = PersonCategory.Scientist,
+            birthLocation = BirthLocation(city = "Woolsthorpe", region = "England", countryCode = "GB"),
+            notes = "English mathematician and physicist"
+        ),
+        FamousPerson(
+            id = "einstein",
+            name = "Albert Einstein",
+            birthDate = LocalDate.of(1879, 3, 14),
+            birthTime = "11:30",
+            profession = "Scientist",
+            category = PersonCategory.Scientist,
+            birthLocation = BirthLocation(city = "Ulm", region = "Württemberg", countryCode = "DE"),
+            notes = "German physicist"
+        ),
+        FamousPerson(
+            id = "galileo",
+            name = "Galileo Galilei",
+            birthDate = LocalDate.of(1564, 2, 15),
+            profession = "Scientist",
+            category = PersonCategory.Scientist,
+            birthLocation = BirthLocation(city = "Pisa", countryCode = "IT"),
+            notes = "Italian astronomer"
+        ),
+        FamousPerson(
+            id = "curie",
+            name = "Marie Curie",
+            birthDate = LocalDate.of(1867, 11, 7),
+            birthTime = "12:00",
+            profession = "Scientist",
+            category = PersonCategory.Scientist,
+            birthLocation = BirthLocation(city = "Warsaw", countryCode = "PL"),
+            notes = "Polish-French physicist"
+        ),
+        FamousPerson(
+            id = "tesla",
+            name = "Nikola Tesla",
+            birthDate = LocalDate.of(1856, 7, 10),
+            birthTime = "00:00",
+            profession = "Scientist",
+            category = PersonCategory.Scientist,
+            birthLocation = BirthLocation(city = "Smiljan", region = "Croatia", countryCode = "HR"),
+            notes = "Serbian-American inventor"
+        ),
+        
+        // Political Leaders
+        FamousPerson(
+            id = "george_washington",
+            name = "George Washington",
+            birthDate = LocalDate.of(1732, 2, 22),
+            birthTime = "16:00",
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Westmoreland", region = "Virginia", countryCode = "US"),
+            notes = "First US President"
+        ),
+        FamousPerson(
+            id = "abraham_lincoln",
+            name = "Abraham Lincoln",
+            birthDate = LocalDate.of(1809, 2, 12),
+            birthTime = "07:00",
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "LaRue County", region = "Kentucky", countryCode = "US"),
+            notes = "16th US President"
+        ),
+        FamousPerson(
+            id = "winston_churchill",
+            name = "Winston Churchill",
+            birthDate = LocalDate.of(1874, 11, 30),
+            birthTime = "01:30",
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Oxfordshire", countryCode = "GB"),
+            notes = "British Prime Minister"
+        ),
+        FamousPerson(
+            id = "mahatma_gandhi",
+            name = "Mahatma Gandhi",
+            birthDate = LocalDate.of(1869, 10, 2),
+            birthTime = "07:00",
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Porbandar", region = "Gujarat", countryCode = "IN"),
+            notes = "Indian independence leader"
+        ),
+        FamousPerson(
+            id = "mlk",
+            name = "Martin Luther King Jr.",
+            birthDate = LocalDate.of(1929, 1, 15),
+            birthTime = "12:00",
+            profession = "Political Leader",
+            category = PersonCategory.PoliticalLeader,
+            birthLocation = BirthLocation(city = "Atlanta", region = "Georgia", countryCode = "US"),
+            notes = "Civil rights leader"
+        ),
+        
+        // Religious Leaders
+        FamousPerson(
+            id = "jesus_christ",
+            name = "Jesus Christ",
+            birthDate = LocalDate.of(-4, 12, 25),
+            profession = "Religious Leader",
+            category = PersonCategory.ReligiousLeader,
+            birthLocation = BirthLocation(city = "Bethlehem", countryCode = "PS"),
+            notes = "Christianity founder"
+        ),
+        FamousPerson(
+            id = "buddha",
+            name = "Siddhartha Gautama (Buddha)",
+            birthDate = LocalDate.of(-563, 5, 15),
+            profession = "Religious Leader",
+            category = PersonCategory.ReligiousLeader,
+            birthLocation = BirthLocation(city = "Lumbini", countryCode = "NP"),
+            notes = "Buddhism founder"
+        ),
+        FamousPerson(
+            id = "muhammad",
+            name = "Muhammad",
+            birthDate = LocalDate.of(570, 4, 20),
+            profession = "Religious Leader",
+            category = PersonCategory.ReligiousLeader,
+            birthLocation = BirthLocation(city = "Mecca", countryCode = "SA"),
+            notes = "Islam prophet"
+        ),
+        
+        // Athletes
+        FamousPerson(
+            id = "muhammad_ali",
+            name = "Muhammad Ali",
+            birthDate = LocalDate.of(1942, 1, 17),
+            birthTime = "18:00",
+            profession = "Boxer",
+            category = PersonCategory.Athlete,
+            birthLocation = BirthLocation(city = "Louisville", region = "Kentucky", countryCode = "US"),
+            notes = "American boxer"
+        ),
+        FamousPerson(
+            id = "michael_jordan",
+            name = "Michael Jordan",
+            birthDate = LocalDate.of(1963, 2, 17),
+            birthTime = "17:00",
+            profession = "Basketball Player",
+            category = PersonCategory.Athlete,
+            birthLocation = BirthLocation(city = "Brooklyn", region = "New York", countryCode = "US"),
+            notes = "American basketball player"
+        ),
+        FamousPerson(
+            id = "pelé",
+            name = "Pelé",
+            birthDate = LocalDate.of(1940, 10, 23),
+            birthTime = "15:00",
+            profession = "Footballer",
+            category = PersonCategory.Athlete,
+            birthLocation = BirthLocation(city = "Tres Corações", region = "Minas Gerais", countryCode = "BR"),
+            notes = "Brazilian footballer"
+        ),
+        
+        // Business Leaders
+        FamousPerson(
+            id = "steve_jobs",
+            name = "Steve Jobs",
+            birthDate = LocalDate.of(1955, 2, 24),
+            birthTime = "19:00",
+            profession = "Business Leader",
+            category = PersonCategory.BusinessLeader,
+            birthLocation = BirthLocation(city = "San Francisco", region = "California", countryCode = "US"),
+            notes = "Apple co-founder"
+        ),
+        FamousPerson(
+            id = "bill_gates",
+            name = "Bill Gates",
+            birthDate = LocalDate.of(1955, 10, 28),
+            birthTime = "21:00",
+            profession = "Business Leader",
+            category = PersonCategory.BusinessLeader,
+            birthLocation = BirthLocation(city = "Seattle", region = "Washington", countryCode = "US"),
+            notes = "Microsoft co-founder"
+        ),
+        
+        // Explorers
+        FamousPerson(
+            id = "columbus",
+            name = "Christopher Columbus",
+            birthDate = LocalDate.of(1451, 10, 31),
+            profession = "Explorer",
+            category = PersonCategory.Explorer,
+            birthLocation = BirthLocation(city = "Genoa", countryCode = "IT"),
+            notes = "Italian explorer"
+        ),
+        FamousPerson(
+            id = "magellan",
+            name = "Ferdinand Magellan",
+            birthDate = LocalDate.of(1480, 2, 4),
+            profession = "Explorer",
+            category = PersonCategory.Explorer,
+            birthLocation = BirthLocation(city = "Sabrosa", countryCode = "PT"),
+            notes = "Portuguese explorer"
+        ),
+    )
+
+    fun searchByName(query: String): List<FamousPerson> {
+        return famousPeople.filter { 
+            it.name.contains(query, ignoreCase = true) || 
+            it.profession.contains(query, ignoreCase = true)
+        }
+    }
+
+    fun searchByCategory(category: PersonCategory): List<FamousPerson> {
+        return famousPeople.filter { it.category == category }
+    }
+
+    fun searchByBirthYear(startYear: Int, endYear: Int): List<FamousPerson> {
+        return famousPeople.filter { person ->
+            val year = person.birthDate.year
+            year in startYear..endYear
+        }
+    }
+
+    fun getById(id: String): FamousPerson? = famousPeople.find { it.id == id }
+
+    fun allCategories(): List<PersonCategory> = PersonCategory.entries
+}

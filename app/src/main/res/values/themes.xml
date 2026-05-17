@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.StellarPath" parent="android:Theme.DeviceDefault.DayNight.NoActionBar" />
+</resources>
