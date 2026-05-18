@@ -1,6 +1,5 @@
 package com.stellarpath.android.model
 
-import androidx.compose.runtime.Immutable
 import java.time.Instant
 
 enum class SubscriptionTier {
@@ -11,22 +10,20 @@ enum class SubscriptionTier {
 }
 
 enum class EntitlementFeature {
-    ExtendedTransitRange,
-    DetailedCompatibility,
+    ExtendedTransitRange,           // ← TransitsScreen gates on this
     DetailedTransitInterpretations,
+    CompatibilityDepth,
     SpecialEvents,
     PdfExport,
     HouseSystems,
-    Widgets,
-    WearOs,
+    UnlimitedProfiles,
 }
 
-@Immutable
 data class SubscriptionEntitlement(
     val tier: SubscriptionTier,
     val active: Boolean,
-    val features: Set<EntitlementFeature> = emptySet(),
-    val expiresAt: Instant? = null,
-    val autoRenew: Boolean = false,
-    val storeProductId: String? = null,
+    val features: Set<EntitlementFeature>,
+    val expiresAt: Instant?,
+    val autoRenew: Boolean,
+    val storeProductId: String?,
 )
