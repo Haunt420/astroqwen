@@ -57,19 +57,13 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Glance for widgets
     implementation("androidx.glance:glance-appwidget:1.1.1")
     implementation("androidx.glance:glance-material3:1.1.1")
-
-    // WorkManager for notifications
     implementation("androidx.work:work-runtime-ktx:2.10.0")
-
-    // Core for share functionality
     implementation("androidx.core:core-ktx:1.15.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
     testImplementation("junit:junit:4.13.2")
 }
