@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    // org.jetbrains.kotlin.android removed: built into AGP 9.0+, applying it is now a fatal error
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
 }
@@ -26,9 +25,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // kotlinOptions { jvmTarget } removed — that DSL came from org.jetbrains.kotlin.android.
-    // JVM target is now set via kotlin { jvmToolchain } below.
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -36,14 +32,15 @@ android {
     }
 }
 
-// Replaces the old kotlinOptions { jvmTarget = "17" } block.
 kotlin {
     jvmToolchain(17)
 }
 
 dependencies {
     val lifecycleVersion = "2.8.7"
-    val roomVersion = "2.6.1"
+    // Room 2.7.0 — first stable release with KSP 2.x support.
+    // 2.6.1 + KSP 2.x causes "unexpected jvm signature V" crash.
+    val roomVersion = "2.7.0"
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)

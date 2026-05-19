@@ -1,3 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.StellarPath" parent="android:Theme.DeviceDefault.DayNight.NoActionBar" />
+    <!--
+        AAPT fix: AndroidManifest must reference an app-defined theme, not
+        @android:style/Theme.DeviceDefault.DayNight.NoActionBar directly —
+        that named style does not exist in the standard Android SDK framework.
+        This theme extends Material3 DayNight and is what the manifest uses.
+    -->
+    <style name="Theme.StellarPath" parent="Theme.Material3.DayNight.NoActionBar" />
 </resources>
