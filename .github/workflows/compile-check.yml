@@ -1,39 +1,37 @@
 name: Compile check
 
 on:
-  # ── Manual trigger ─────────────────────────────────────────────────────────
-  # Green "Run workflow" button appears in GitHub → Actions → Compile check
+  # Manual trigger — button appears on whichever branch you select in the UI.
+  # IMPORTANT: if your default branch is "master" not "main", select the correct
+  # branch in the dropdown before clicking Run workflow.
   workflow_dispatch:
     inputs:
       run_lint:
-        description: 'Run lint in addition to compile'
+        description: 'Run lint'
         required: false
         default: 'false'
         type: boolean
       run_tests:
-        description: 'Run unit tests in addition to compile'
+        description: 'Run unit tests'
+        required: false
+        default: 'false'
+        type: boolean
+      refresh_deps:
+        description: 'Force re-download all dependencies (busts plugin cache)'
         required: false
         default: 'false'
         type: boolean
 
-  # ── Automatic triggers ─────────────────────────────────────────────────────
+  # Auto-trigger on every push to any branch — no paths filter.
+  # Paths filters are removed because they can silently skip root-level .kts
+  # changes depending on how GitHub expands the glob.
   push:
     branches:
-      - main
-      - develop
-      - 'feature/**'
-    paths:
-      - '**/*.kt'
-      - '**/*.kts'
-      - '**/AndroidManifest.xml'
-      - 'gradle/**'
-      - 'gradle.properties'
+      - '**'
   pull_request:
     branches:
-      - main
-      - develop
+      - '**'
 
-# Cancel any in-progress run for the same branch when a new push arrives
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -45,11 +43,34 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      # ── 1. Source ───────────────────────────────────────────────────────────
+      # ── 1. Checkout ────────────────────────────────────────────────────────
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Java ─────────────────────────────────────────────────────────────
+      # ── 2. Diagnostic — print exactly what we are building ─────────────────
+      # If this step shows the old KSP version, the file was not pushed to
+      # the branch selected when the workflow was triggered.
+      - name: Show build identity
+        run: |
+          echo "::group::Git info"
+          echo "Branch : ${{ github.ref_name }}"
+          echo "SHA    : ${{ github.sha }}"
+          echo "Trigger: ${{ github.event_name }}"
+          echo "::endgroup::"
+
+          echo "::group::build.gradle.kts (root)"
+          cat build.gradle.kts
+          echo "::endgroup::"
+
+          echo "::group::settings.gradle.kts"
+          cat settings.gradle.kts
+          echo "::endgroup::"
+
+          echo "::group::gradle-wrapper.properties"
+          cat gradle/wrapper/gradle-wrapper.properties
+          echo "::endgroup::"
+
+      # ── 3. Java ────────────────────────────────────────────────────────────
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -57,7 +78,7 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
-      # ── 3. Android SDK ──────────────────────────────────────────────────────
+      # ── 4. Android SDK ─────────────────────────────────────────────────────
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
         with:
@@ -66,24 +87,18 @@ jobs:
       - name: Accept SDK licenses
         run: yes | sdkmanager --licenses 2>/dev/null || true
 
-      # ── 4. Gradle wrapper ───────────────────────────────────────────────────
+      # ── 5. Gradle wrapper ──────────────────────────────────────────────────
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      # gradle-wrapper.jar is a binary that should be committed.
-      # If it is missing (e.g. gitignored by accident), regenerate it here
-      # using the system Gradle that ships on ubuntu-latest.
       - name: Regenerate gradle-wrapper.jar if absent
         run: |
           if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
-            echo "⚠️  gradle-wrapper.jar missing — regenerating via system gradle"
+            echo "gradle-wrapper.jar missing — regenerating"
             gradle wrapper --gradle-version 8.11.1 --distribution-type bin
-            echo "✅  gradle-wrapper.jar regenerated"
-          else
-            echo "✅  gradle-wrapper.jar present"
           fi
 
-      # ── 5. Cache Gradle distributions ──────────────────────────────────────
+      # ── 6. Cache Gradle distributions ──────────────────────────────────────
       - name: Cache Gradle distributions
         uses: actions/cache@v4
         with:
@@ -91,22 +106,26 @@ jobs:
           key: gradle-dist-8.11.1
           restore-keys: gradle-dist-
 
-      # ── 6. Compile ──────────────────────────────────────────────────────────
+      # ── 7. Compile ─────────────────────────────────────────────────────────
       - name: Compile debug APK
         run: |
+          EXTRA_FLAGS=""
+          if [ "${{ github.event.inputs.refresh_deps }}" = "true" ]; then
+            EXTRA_FLAGS="--refresh-dependencies"
+          fi
+
           ./gradlew assembleDebug \
             --no-daemon \
+            --no-configuration-cache \
             --stacktrace \
             --warning-mode all \
-            -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=512m"
+            -Dorg.gradle.jvmargs="-Xmx4g -XX:MaxMetaspaceSize=512m" \
+            $EXTRA_FLAGS
 
-      # ── 7. Optional lint ────────────────────────────────────────────────────
+      # ── 8. Optional lint ───────────────────────────────────────────────────
       - name: Lint
         if: ${{ github.event.inputs.run_lint == 'true' }}
-        run: |
-          ./gradlew lintDebug \
-            --no-daemon \
-            --continue
+        run: ./gradlew lintDebug --no-daemon --no-configuration-cache --continue
 
       - name: Upload lint report
         if: ${{ github.event.inputs.run_lint == 'true' && always() }}
@@ -116,13 +135,10 @@ jobs:
           path: app/build/reports/lint-results-debug.html
           retention-days: 14
 
-      # ── 8. Optional unit tests ──────────────────────────────────────────────
+      # ── 9. Optional unit tests ─────────────────────────────────────────────
       - name: Unit tests
         if: ${{ github.event.inputs.run_tests == 'true' }}
-        run: |
-          ./gradlew testDebugUnitTest \
-            --no-daemon \
-            --continue
+        run: ./gradlew testDebugUnitTest --no-daemon --no-configuration-cache --continue
 
       - name: Upload test report
         if: ${{ github.event.inputs.run_tests == 'true' && always() }}
@@ -132,7 +148,7 @@ jobs:
           path: app/build/reports/tests/testDebugUnitTest/
           retention-days: 14
 
-      # ── 9. Upload APK ───────────────────────────────────────────────────────
+      # ── 10. Upload APK ─────────────────────────────────────────────────────
       - name: Upload debug APK
         if: success()
         uses: actions/upload-artifact@v4
@@ -142,7 +158,7 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
-      # ── 10. Build summary ───────────────────────────────────────────────────
+      # ── 11. Job summary ────────────────────────────────────────────────────
       - name: Write job summary
         if: always()
         run: |
@@ -152,12 +168,12 @@ jobs:
           echo "|---|---|" >> $GITHUB_STEP_SUMMARY
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Run | #${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run    | #${{ github.run_number }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Trigger | ${{ github.event_name }} |" >> $GITHUB_STEP_SUMMARY
           if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
             APK_SIZE=$(du -sh app/build/outputs/apk/debug/app-debug.apk | cut -f1)
             echo "| APK size | $APK_SIZE |" >> $GITHUB_STEP_SUMMARY
-            echo "| Status | ✅ Build passed |" >> $GITHUB_STEP_SUMMARY
+            echo "| Status | ✅ passed |" >> $GITHUB_STEP_SUMMARY
           else
             echo "| Status | ❌ APK not produced |" >> $GITHUB_STEP_SUMMARY
           fi
