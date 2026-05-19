@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        AAPT fix: AndroidManifest must reference an app-defined theme, not
-        @android:style/Theme.DeviceDefault.DayNight.NoActionBar directly —
-        that named style does not exist in the standard Android SDK framework.
-        This theme extends Material3 DayNight and is what the manifest uses.
+        Parent must be a framework theme (android: prefix) or a library theme
+        whose library is explicitly depended on.
+
+        Theme.Material3.DayNight.NoActionBar is an XML/View-system theme from
+        com.google.android.material:material — that library is NOT in this project.
+        Compose Material3 (androidx.compose.material3) is a different artifact
+        and does NOT provide XML themes.
+
+        android:Theme.Material.Light.NoActionBar is always present (framework,
+        API 21+). With minSdk=26 it is unconditionally safe and requires no
+        extra dependency. Compose handles its own theming at runtime;
+        the manifest theme only needs to suppress the system ActionBar.
     -->
-    <style name="Theme.StellarPath" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.StellarPath" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
