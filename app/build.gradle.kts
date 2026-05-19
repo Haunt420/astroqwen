@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    // org.jetbrains.kotlin.android removed: built into AGP 9.0+, applying it is now a fatal error
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
 }
@@ -26,15 +26,19 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    // kotlinOptions { jvmTarget } removed — that DSL came from org.jetbrains.kotlin.android.
+    // JVM target is now set via kotlin { jvmToolchain } below.
 
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+// Replaces the old kotlinOptions { jvmTarget = "17" } block.
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
