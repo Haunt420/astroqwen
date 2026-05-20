@@ -15,7 +15,6 @@ import com.stellarpath.android.ui.screens.HomeScreen
 import com.stellarpath.android.ui.screens.LibraryDetailScreen
 import com.stellarpath.android.ui.screens.LibraryScreen
 import com.stellarpath.android.ui.screens.OnboardingScreen
-import com.stellarpath.android.ui.screens.PaywallScreen
 import com.stellarpath.android.ui.screens.ProfileDetailScreen
 import com.stellarpath.android.ui.screens.ProfileEditorScreen
 import com.stellarpath.android.ui.screens.ProfilesScreen
@@ -76,7 +75,6 @@ fun AppNavGraph(
                 onOpenReports = { navController.navigate(Routes.Reports) },
                 onOpenLibrary = { navController.navigate(Routes.Library) },
                 onOpenSettings = { navController.navigate(Routes.Settings) },
-                onOpenPaywall = { navController.navigate(Routes.Paywall) },
             )
         }
 
@@ -98,7 +96,6 @@ fun AppNavGraph(
                 onOpenEventDetail = { eventId ->
                     navController.navigate(Routes.eventDetail(eventId))
                 },
-                onOpenPaywall = { navController.navigate(Routes.Paywall) },
             )
         }
 
@@ -108,7 +105,6 @@ fun AppNavGraph(
                 onOpenProfileDetail = { profileId ->
                     navController.navigate(Routes.profileDetail(profileId))
                 },
-                onOpenPaywall = { navController.navigate(Routes.Paywall) },
             )
         }
 
@@ -130,7 +126,6 @@ fun AppNavGraph(
                 onOpenReportPreview = { profileId ->
                     navController.navigate(Routes.reportPreview(profileId))
                 },
-                onOpenPaywall = { navController.navigate(Routes.Paywall) },
             )
         }
 
@@ -155,12 +150,7 @@ fun AppNavGraph(
         composable(Routes.Settings) {
             SettingsScreen(
                 onBack = { navController.popBackStack() },
-                onOpenPaywall = { navController.navigate(Routes.Paywall) },
             )
-        }
-
-        composable(Routes.Paywall) {
-            PaywallScreen(onBack = { navController.popBackStack() })
         }
 
         composable(
@@ -196,8 +186,6 @@ fun AppNavGraph(
             ReportPreviewScreen(
                 profileId = profileId,
                 onBack = { navController.popBackStack() },
-                onShare = { },
-                onExportPdf = { },
             )
         }
 

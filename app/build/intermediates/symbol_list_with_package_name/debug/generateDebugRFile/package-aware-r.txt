@@ -1,0 +1,4 @@
+com.stellarpath.android
+string app_name
+style Theme_StellarPath
+xml file_paths

@@ -14,8 +14,6 @@ interface SettingsRepository {
 
     suspend fun updateDefaultProfile(profileId: String?)
 
-    suspend fun updateShowPremiumPrompts(showPremiumPrompts: Boolean)
-
     suspend fun updateNotificationPreference(
         dailyReadingEnabled: Boolean? = null,
         transitAlertsEnabled: Boolean? = null,

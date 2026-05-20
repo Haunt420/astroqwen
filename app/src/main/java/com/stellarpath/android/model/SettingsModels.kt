@@ -22,5 +22,4 @@ data class AppSettings(
     val notifications: NotificationPreferences = NotificationPreferences(),
     val defaultProfileId: String? = null,
     val defaultHouseSystem: HouseSystem = HouseSystem.Placidus,
-    val showPremiumPrompts: Boolean = true,
 )

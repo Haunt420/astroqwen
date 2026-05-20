@@ -16,6 +16,5 @@ data class ReferenceTopic(
     val id: String,
     val title: String,
     val summary: String,
-    val premiumLocked: Boolean = false,
     val sections: List<ReferenceSection> = emptyList(),
 )

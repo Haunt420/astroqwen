@@ -16,7 +16,6 @@ import com.stellarpath.android.model.DailyReading
 import com.stellarpath.android.model.HouseSystem
 import com.stellarpath.android.model.ReferenceTopic
 import com.stellarpath.android.model.SpecialEvent
-import com.stellarpath.android.model.SubscriptionEntitlement
 import com.stellarpath.android.model.ThemeMode
 import com.stellarpath.android.model.TransitWindow
 import java.time.LocalDate
@@ -42,9 +41,6 @@ class StellarPathAppState {
         private set
 
     var settings by mutableStateOf(sample.settings)
-        private set
-
-    var entitlement by mutableStateOf(sample.entitlement)
         private set
 
     var profileEditorDraftName by mutableStateOf("")
@@ -91,10 +87,6 @@ class StellarPathAppState {
         )
     }
 
-    fun updateShowPremiumPrompts(show: Boolean) {
-        settings = settings.copy(showPremiumPrompts = show)
-    }
-
     fun beginProfileEditor(profileName: String = "") {
         profileEditorDraftName = profileName
     }
@@ -129,8 +121,6 @@ class StellarPathAppState {
     fun specialEvent(eventId: String): SpecialEvent = sample.specialEvent(eventId)
 
     fun specialEvents(): List<SpecialEvent> = sample.specialEvents
-
-    fun subscription(): SubscriptionEntitlement = entitlement
 
     fun settings(): AppSettings = settings
 }

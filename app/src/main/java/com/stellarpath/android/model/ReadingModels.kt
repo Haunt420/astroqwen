@@ -21,7 +21,6 @@ data class TransitMarker(
     val title: String,
     val type: TransitMarkerType,
     val summary: String,
-    val premiumLocked: Boolean = false,
 )
 
 @Immutable
@@ -38,7 +37,6 @@ data class InterpretationBlock(
     val id: String,
     val title: String,
     val body: String,
-    val premiumLocked: Boolean = false,
     val relatedBodies: List<AstrologyBody> = emptyList(),
     val relatedAspects: List<AspectType> = emptyList(),
 )
@@ -69,5 +67,4 @@ data class SpecialEvent(
     val date: LocalDate,
     val type: SpecialEventType,
     val summary: String,
-    val premiumLocked: Boolean = false,
 )

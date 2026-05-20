@@ -14,7 +14,6 @@ object Routes {
     const val Library       = "library"
     const val FamousPeople  = "famous_people"   // ← was missing; AppNavGraph references this
     const val Settings      = "settings"
-    const val Paywall       = "paywall"
 
     // ── Parameterised route templates ─────────────────────────────────────────
     const val ARG_PROFILE_ID = "profileId"

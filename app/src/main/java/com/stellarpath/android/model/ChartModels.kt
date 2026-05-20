@@ -38,7 +38,6 @@ data class Aspect(
     val type: AspectType,
     val orb: Double,
     val exact: Boolean = false,
-    val premiumLocked: Boolean = false,
 )
 
 @Immutable

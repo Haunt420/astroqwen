@@ -27,5 +27,4 @@ data class CompatibilityReport(
     val harmony: CompatibilityDimension,
     val passion: CompatibilityDimension,
     val overallSummary: String,
-    val premiumLocked: Boolean = false,  // ← AppScreens.CompatibilityScreen references this
 )

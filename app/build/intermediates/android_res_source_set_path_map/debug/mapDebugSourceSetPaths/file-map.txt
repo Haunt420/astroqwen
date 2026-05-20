@@ -1,0 +1,7 @@
+com.stellarpath.android.app-pngs-0 /sdcard/codex/astroqwen/app/build/generated/res/pngs/debug
+com.stellarpath.android.app-updated_navigation_xml-1 /sdcard/codex/astroqwen/app/build/generated/updated_navigation_xml/debug
+com.stellarpath.android.app-packageDebugResources-2 /sdcard/codex/astroqwen/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.stellarpath.android.app-packageDebugResources-3 /sdcard/codex/astroqwen/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.stellarpath.android.app-debug-4 /sdcard/codex/astroqwen/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.stellarpath.android.app-debug-5 /sdcard/codex/astroqwen/app/src/debug/res
+com.stellarpath.android.app-main-6 /sdcard/codex/astroqwen/app/src/main/res

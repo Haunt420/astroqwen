@@ -23,15 +23,12 @@ import com.stellarpath.android.model.ReferenceTopic
 import com.stellarpath.android.model.DailyReading
 import com.stellarpath.android.model.SpecialEvent
 import com.stellarpath.android.model.SpecialEventType
-import com.stellarpath.android.model.SubscriptionEntitlement
-import com.stellarpath.android.model.SubscriptionTier
 import com.stellarpath.android.model.ThemeMode
 import com.stellarpath.android.model.TransitMarker
 import com.stellarpath.android.model.TransitMarkerType
 import com.stellarpath.android.model.TransitWindow
 import com.stellarpath.android.model.ZodiacSign
 import com.stellarpath.android.model.AppSettings
-import com.stellarpath.android.model.EntitlementFeature
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -301,16 +298,6 @@ object SampleAstroData {
         ),
         defaultProfileId = "self",
         defaultHouseSystem = HouseSystem.Placidus,
-        showPremiumPrompts = true,
-    )
-
-    val entitlement = SubscriptionEntitlement(
-        tier = SubscriptionTier.Free,
-        active = true,
-        features = setOf(),
-        expiresAt = null,
-        autoRenew = false,
-        storeProductId = null,
     )
 
     fun chartFor(profileId: String): ChartSnapshot = charts[profileId] ?: charts.getValue("self")
@@ -414,7 +401,7 @@ object SampleAstroData {
             Aspect(AstrologyBody.Sun, AstrologyBody.Moon, AspectType.Sextile, 1.8),
             Aspect(AstrologyBody.Venus, AstrologyBody.Mars, AspectType.Trine, 0.6),
             Aspect(AstrologyBody.Mercury, AstrologyBody.Saturn, AspectType.Square, 2.1),
-            Aspect(AstrologyBody.Jupiter, AstrologyBody.Neptune, AspectType.Opposition, 1.2, premiumLocked = true),
+            Aspect(AstrologyBody.Jupiter, AstrologyBody.Neptune, AspectType.Opposition, 1.2),
             Aspect(AstrologyBody.Saturn, AstrologyBody.Pluto, AspectType.Sextile, 0.9),
         )
         val houses = (1..12).map { house ->

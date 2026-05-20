@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.matchParentSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -68,6 +67,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -86,14 +86,12 @@ import com.stellarpath.android.model.ChartPrecision
 import com.stellarpath.android.model.ChartSnapshot
 import com.stellarpath.android.model.CompatibilityDimension
 import com.stellarpath.android.model.CompatibilityReport
-import com.stellarpath.android.model.EntitlementFeature
 import com.stellarpath.android.model.HouseSystem
 import com.stellarpath.android.model.InterpretationBlock
 import com.stellarpath.android.model.PersonCategory
 import com.stellarpath.android.model.ProfileType
 import com.stellarpath.android.model.ReferenceTopic
 import com.stellarpath.android.model.SpecialEvent
-import com.stellarpath.android.model.SubscriptionTier
 import com.stellarpath.android.model.ThemeMode
 import com.stellarpath.android.model.TransitMarker
 import com.stellarpath.android.model.ZodiacSign
@@ -133,7 +131,7 @@ fun SplashScreen(
                     textAlign = TextAlign.Center,
                 )
                 Text(
-                    text = "Loading cached profiles, chart state, and premium entitlements.",
+                    text = "Loading cached profiles and chart state.",
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -177,7 +175,7 @@ fun OnboardingScreen(
             }
             item {
                 SectionCard(title = "What you can do here", subtitle = "Daily reading, transits, compatibility, reports, and reference content.") {
-                    FlowList(items = listOf("Natal chart", "Transit timeline", "Compatibility", "PDF report", "Special events", "Reference library"))
+                    FlowList(items = listOf("Natal chart", "Transit timeline", "Compatibility", "Report preview", "Special events", "Reference library"))
                 }
             }
             item {
@@ -199,7 +197,6 @@ fun HomeScreen(
     onOpenReports: () -> Unit,
     onOpenLibrary: () -> Unit,
     onOpenSettings: () -> Unit,
-    onOpenPaywall: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val profile = appState.activeProfile()
@@ -251,10 +248,9 @@ fun HomeScreen(
                             ActionTileData("Transits", "Future scrubber", onOpenTransits),
                             ActionTileData("Compatibility", "Synastry and fit", onOpenCompatibility),
                             ActionTileData("Profiles", "People vault", onOpenProfiles),
-                            ActionTileData("Reports", "PDF and share", onOpenReports),
+                            ActionTileData("Reports", "Report preview", onOpenReports),
                             ActionTileData("Library", "Elements and houses", onOpenLibrary),
                             ActionTileData("Settings", "Theme and privacy", onOpenSettings),
-                            ActionTileData("Paywall", "Premium unlocks", onOpenPaywall),
                         ),
                     )
                 }
@@ -345,7 +341,6 @@ fun ChartScreen(
 fun TransitsScreen(
     onBack: () -> Unit,
     onOpenEventDetail: (String) -> Unit,
-    onOpenPaywall: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val profile = appState.activeProfile()
@@ -353,7 +348,6 @@ fun TransitsScreen(
     val activeDate = window.activeDate
     val totalDays = ChronoUnit.DAYS.between(window.startDate, window.endDate).toInt().coerceAtLeast(1)
     val selectedOffset = ChronoUnit.DAYS.between(window.startDate, activeDate).toFloat()
-    val premiumLocked = EntitlementFeature.ExtendedTransitRange !in appState.subscription().features
 
     val transitChart = appState.transitChart(profile.id, activeDate)
     val transitReading = appState.transitReading(profile.id, activeDate)
@@ -372,16 +366,6 @@ fun TransitsScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (premiumLocked) {
-                item {
-                    PremiumBanner(
-                        title = "Extended range is premium",
-                        description = "Scrub further into the future by unlocking the full transit window.",
-                        onOpenPaywall = onOpenPaywall,
-                    )
-                }
-            }
-
             item {
                 ElevatedCard(shape = RoundedCornerShape(28.dp), modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -524,7 +508,6 @@ fun TransitsScreen(
 fun CompatibilityScreen(
     onBack: () -> Unit,
     onOpenProfileDetail: (String) -> Unit,
-    onOpenPaywall: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val profiles = appState.profiles()
@@ -538,15 +521,6 @@ fun CompatibilityScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (report.premiumLocked) {
-                item {
-                    PremiumBanner(
-                        title = "Detailed compatibility is premium",
-                        description = "The full synastry breakdown is locked in the free tier.",
-                        onOpenPaywall = onOpenPaywall,
-                    )
-                }
-            }
             item {
                 SectionCard(title = "Choose the pair", subtitle = "Compare any two saved people.") {
                     ProfileSelectionPair(label = "Primary", selectedId = report.primaryProfileId, profiles = profiles, onSelect = appState::selectCompatibilityPrimary)
@@ -607,7 +581,6 @@ fun ProfilesScreen(
 fun ReportsScreen(
     onBack: () -> Unit,
     onOpenReportPreview: (String) -> Unit,
-    onOpenPaywall: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val profile = appState.activeProfile()
@@ -621,18 +594,17 @@ fun ReportsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                SectionCard(title = "PDF report", subtitle = "Export a permanent chart summary.") {
+                SectionCard(title = "Report preview", subtitle = "View a permanent chart summary.") {
                     ReportPreviewCard(profile = profile, reading = reading, chart = chart)
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = { onOpenReportPreview(profile.id) }, modifier = Modifier.weight(1f)) { Text("Preview") }
-                        Button(onClick = onOpenPaywall, modifier = Modifier.weight(1f)) { Text("Unlock export") }
                     }
                 }
             }
             item {
-                SectionCard(title = "Share snapshot", subtitle = "Card-style export for social and messaging apps.") {
-                    ShareSnapshotPreview(profile = profile, reading = reading)
+                SectionCard(title = "Snapshot preview", subtitle = "A compact card for the report layout.") {
+                    ReadingSnapshotCard(profile = profile, reading = reading)
                 }
             }
         }
@@ -747,11 +719,9 @@ fun FamousPeopleScreen(
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    onOpenPaywall: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val settings = appState.settings()
-    val subscription = appState.subscription()
 
     AppScreenScaffold(title = "Settings", onBack = onBack) { innerPadding ->
         LazyColumn(
@@ -794,52 +764,10 @@ fun SettingsScreen(
                 }
             }
             item {
-                SectionCard(title = "Subscription", subtitle = "Current entitlement state.") {
-                    Text(
-                        text = when (subscription.tier) {
-                            SubscriptionTier.Free -> "Free tier active"
-                            SubscriptionTier.PremiumMonthly -> "Premium monthly active"
-                            SubscriptionTier.PremiumAnnual -> "Premium annual active"
-                            SubscriptionTier.Lifetime -> "Lifetime access active"
-                        },
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(text = "Restore purchases or move to the premium screen to review unlocks.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Spacer(Modifier.height(12.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(onClick = onOpenPaywall, modifier = Modifier.weight(1f)) { Text("Open paywall") }
-                        Button(onClick = onOpenPaywall, modifier = Modifier.weight(1f)) { Text("Restore") }
-                    }
-                }
-            }
-            item {
                 SectionCard(title = "Privacy", subtitle = "Data handling and local storage.") {
                     Text(text = "Birth data stays local in this scaffold. Automatic backups are disabled.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
-        }
-    }
-}
-
-// ─── Paywall screen ───────────────────────────────────────────────────────────
-
-@Composable
-fun PaywallScreen(onBack: () -> Unit) {
-    AppScreenScaffold(title = "Premium", onBack = onBack) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
-            contentPadding = PaddingValues(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            item {
-                SectionCard(title = "Unlock the full chart experience", subtitle = "Feature gates mirror the observable product shape.") {
-                    FlowList(items = listOf("Extended transit range", "Detailed transit interpretations", "Compatibility depth", "Special events", "PDF export", "House systems"))
-                }
-            }
-            item { PlanCard(title = "Monthly", price = "$4.99", description = "Good for trying the premium surface without a long commitment.") }
-            item { PlanCard(title = "Annual", price = "$24.99", description = "Better for daily users who want the extended chart and report tools.") }
-            item { PlanCard(title = "Lifetime", price = "$59.99", description = "One-time access for users who plan to keep a long-term chart history.") }
         }
     }
 }
@@ -960,8 +888,6 @@ fun ProfileEditorScreen(
 fun ReportPreviewScreen(
     profileId: String,
     onBack: () -> Unit,
-    onShare: () -> Unit,
-    onExportPdf: () -> Unit,
 ) {
     val appState = LocalStellarPathAppState.current
     val profile = appState.profile(profileId)
@@ -974,13 +900,7 @@ fun ReportPreviewScreen(
             contentPadding = PaddingValues(20.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            item { SectionCard(title = "Preview", subtitle = "PDF-ready layout") { ReportPreviewCard(profile = profile, reading = reading, chart = chart) } }
-            item {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(onClick = onShare, enabled = false, modifier = Modifier.weight(1f)) { Text("Share") }
-                        Button(onClick = onExportPdf, enabled = false, modifier = Modifier.weight(1f)) { Text("Export PDF") }
-                    }
-            }
+            item { SectionCard(title = "Preview", subtitle = "Structured layout") { ReportPreviewCard(profile = profile, reading = reading, chart = chart) } }
         }
     }
 }
@@ -1203,7 +1123,6 @@ private fun AspectRow(aspect: Aspect) {
                 Text(text = "${aspect.source.name} ${aspect.type.name.lowercase(Locale.US)} ${aspect.target.name}", style = MaterialTheme.typography.titleMedium)
                 Text(text = "Orb ${formatDegree(aspect.orb)}", color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            if (aspect.premiumLocked) AssistBubble(text = "Premium")
         }
     }
 }
@@ -1274,7 +1193,7 @@ private fun ReportPreviewCard(profile: BirthProfile, reading: com.stellarpath.an
 }
 
 @Composable
-private fun ShareSnapshotPreview(profile: BirthProfile, reading: com.stellarpath.android.model.DailyReading) {
+private fun ReadingSnapshotCard(profile: BirthProfile, reading: com.stellarpath.android.model.DailyReading) {
     Card(
         shape = RoundedCornerShape(24.dp),
         modifier = Modifier.fillMaxWidth(),
@@ -1308,29 +1227,6 @@ private fun SettingSwitchRow(label: String, checked: Boolean, onCheckedChange: (
     Row(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         Text(label, modifier = Modifier.weight(1f))
         Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
-}
-
-@Composable
-private fun PlanCard(title: String, price: String, description: String) {
-    ElevatedCard(shape = RoundedCornerShape(24.dp), modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(title, style = MaterialTheme.typography.titleLarge)
-            Text(price, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Button(onClick = {}, enabled = false) { Text("Choose plan") }
-        }
-    }
-}
-
-@Composable
-private fun PremiumBanner(title: String, description: String, onOpenPaywall: () -> Unit) {
-    OutlinedCard(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp)) {
-        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text(title, style = MaterialTheme.typography.titleMedium)
-            Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            OutlinedButton(onClick = onOpenPaywall) { Text("Open premium") }
-        }
     }
 }
 
@@ -1410,7 +1306,7 @@ private fun ChartWheel(
         val signNames = ZodiacSign.entries.map { it.name.take(3).uppercase() }
 
         Canvas(
-            modifier = Modifier.matchParentSize().pointerInput(chart, selectedBody, transitMode) {
+            modifier = Modifier.fillMaxSize().pointerInput(chart, selectedBody, transitMode) {
                 detectTapGestures { tapOffset ->
                     var closest: AstrologyBody? = null
                     var closestDist = Float.MAX_VALUE

@@ -55,12 +55,6 @@ class DataStoreSettingsRepository(
         }
     }
 
-    override suspend fun updateShowPremiumPrompts(showPremiumPrompts: Boolean) {
-        dataStore.edit { prefs ->
-            prefs[SettingKeys.ShowPremiumPrompts] = showPremiumPrompts
-        }
-    }
-
     override suspend fun updateNotificationPreference(
         dailyReadingEnabled: Boolean?,
         transitAlertsEnabled: Boolean?,
@@ -91,7 +85,6 @@ class DataStoreSettingsRepository(
                 prefs[SettingKeys.DefaultHouseSystem],
                 HouseSystem.Placidus,
             ),
-            showPremiumPrompts = prefs[SettingKeys.ShowPremiumPrompts] ?: true,
         )
     }
 }
@@ -100,7 +93,6 @@ private object SettingKeys {
     val ThemeMode = stringPreferencesKey("theme_mode")
     val DefaultProfileId = stringPreferencesKey("default_profile_id")
     val DefaultHouseSystem = stringPreferencesKey("default_house_system")
-    val ShowPremiumPrompts = booleanPreferencesKey("show_premium_prompts")
 
     val DailyReadingEnabled = booleanPreferencesKey("daily_reading_enabled")
     val TransitAlertsEnabled = booleanPreferencesKey("transit_alerts_enabled")
