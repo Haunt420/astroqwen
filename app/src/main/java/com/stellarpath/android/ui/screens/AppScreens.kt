@@ -2,13 +2,12 @@
 
 package com.stellarpath.android.ui.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -27,12 +26,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -56,7 +55,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberSaveable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,6 +75,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stellarpath.android.data.FamousPeopleDatabase
+import com.stellarpath.android.data.SampleAstroData
 import com.stellarpath.android.model.AstrologyBody
 import com.stellarpath.android.model.Aspect
 import com.stellarpath.android.model.AspectType
@@ -85,6 +85,7 @@ import com.stellarpath.android.model.ChartPlacement
 import com.stellarpath.android.model.ChartPrecision
 import com.stellarpath.android.model.ChartSnapshot
 import com.stellarpath.android.model.CompatibilityDimension
+import com.stellarpath.android.model.CompatibilityReport
 import com.stellarpath.android.model.EntitlementFeature
 import com.stellarpath.android.model.HouseSystem
 import com.stellarpath.android.model.InterpretationBlock
@@ -159,10 +160,7 @@ fun OnboardingScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                SectionCard(
-                    title = "Add birth details",
-                    subtitle = "Create a natal chart, daily reading, and compatibility graph.",
-                ) {
+                SectionCard(title = "Add birth details", subtitle = "Create a natal chart, daily reading, and compatibility graph.") {
                     Text(
                         text = "The app can work with an exact time, an approximate time, or an unknown time profile.",
                         style = MaterialTheme.typography.bodyMedium,
@@ -178,10 +176,7 @@ fun OnboardingScreen(
                 }
             }
             item {
-                SectionCard(
-                    title = "What you can do here",
-                    subtitle = "Daily reading, transits, compatibility, reports, widgets, and reference content.",
-                ) {
+                SectionCard(title = "What you can do here", subtitle = "Daily reading, transits, compatibility, reports, widgets, and reference content.") {
                     FlowList(items = listOf("Natal chart", "Transit timeline", "Compatibility", "PDF report", "Widget support", "Special events"))
                 }
             }
@@ -240,11 +235,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                     )
                     Spacer(Modifier.height(12.dp))
-                    Text(
-                        text = chart.summary?.description ?: "",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    Text(text = chart.summary?.description ?: "", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
             item {
@@ -284,8 +275,7 @@ fun ChartScreen(
     val profile = appState.activeProfile()
     val chart = appState.chart(profile.id)
     var selectedBody by rememberSaveable { mutableStateOf(AstrologyBody.Sun) }
-    val selectedPlacement = chart.placements.firstOrNull { it.body == selectedBody }
-        ?: chart.placements.first()
+    val selectedPlacement = chart.placements.firstOrNull { it.body == selectedBody } ?: chart.placements.first()
 
     AppScreenScaffold(title = "Chart", onBack = onBack) { innerPadding ->
         LazyColumn(
@@ -366,14 +356,15 @@ fun TransitsScreen(
     val premiumLocked = EntitlementFeature.ExtendedTransitRange !in appState.subscription().features
 
     val transitChart = appState.transitChart(profile.id, activeDate)
+    val transitReading = appState.transitReading(profile.id, activeDate)
     var selectedBody by rememberSaveable { mutableStateOf(AstrologyBody.Sun) }
     val transitAspects = transitChart.transitAspects ?: emptyList()
     val majorAspects = transitAspects.filter {
         it.type in listOf(AspectType.Conjunction, AspectType.Opposition, AspectType.Trine, AspectType.Square)
     }
 
-    val monthNames = listOf("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
-    val dayNames = listOf("Sun","Mon","Tue","Wed","Thu","Fri","Sat")
+    val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    val dayNames = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
     AppScreenScaffold(title = "Transits", onBack = onBack) { innerPadding ->
         LazyColumn(
@@ -421,8 +412,8 @@ fun TransitsScreen(
                                 Text(
                                     text = when {
                                         daysFrom == 0L -> "Today"
-                                        daysFrom > 0   -> "+${daysFrom}d ahead"
-                                        else           -> "${-daysFrom}d ago"
+                                        daysFrom > 0 -> "+${daysFrom}d ahead"
+                                        else -> "${-daysFrom}d ago"
                                     },
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -458,10 +449,10 @@ fun TransitsScreen(
                                 majorAspects.take(3).forEach { aspect ->
                                     val label = when (aspect.type) {
                                         AspectType.Conjunction -> "\u260C"
-                                        AspectType.Opposition  -> "\u260D"
-                                        AspectType.Trine       -> "\u25B3"
-                                        AspectType.Square      -> "\u25A1"
-                                        else                   -> "\u2219"
+                                        AspectType.Opposition -> "\u260D"
+                                        AspectType.Trine -> "\u25B3"
+                                        AspectType.Square -> "\u25A1"
+                                        else -> "\u2219"
                                     }
                                     AssistBubble(text = "$label ${aspect.source.name.take(3)}-${aspect.target.name.take(3)}")
                                 }
@@ -501,9 +492,9 @@ fun TransitsScreen(
                             Text(text = "Transit aspects", style = MaterialTheme.typography.titleLarge)
                             Text(
                                 text = when {
-                                    majorAspects.size >= 5  -> "Heavy transit day \u2014 several bodies activated."
+                                    majorAspects.size >= 5 -> "Heavy transit day \u2014 several bodies activated."
                                     majorAspects.isNotEmpty() -> "${majorAspects.size} major aspect${if (majorAspects.size != 1) "s" else ""} in effect."
-                                    else                    -> "No major aspects today. Background influence is subtle."
+                                    else -> "No major aspects today. Background influence is subtle."
                                 },
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -518,7 +509,9 @@ fun TransitsScreen(
                     Text(text = "Events", style = MaterialTheme.typography.titleLarge, modifier = Modifier.padding(start = 4.dp))
                 }
                 window.markers.forEach { marker ->
-                    item { TransitMarkerCard(marker = marker, onClick = { onOpenEventDetail(marker.id) }) }
+                    item {
+                        TransitMarkerCard(marker = marker, onClick = { onOpenEventDetail(marker.id) })
+                    }
                 }
             }
         }
@@ -688,7 +681,7 @@ fun FamousPeopleScreen(
         when {
             searchQuery.isNotBlank() -> FamousPeopleDatabase.searchByName(searchQuery)
             selectedCategory != null -> FamousPeopleDatabase.searchByCategory(selectedCategory!!)
-            else                     -> FamousPeopleDatabase.famousPeople
+            else -> FamousPeopleDatabase.famousPeople
         }
     }
 
@@ -770,8 +763,8 @@ fun SettingsScreen(
                 SectionCard(title = "Appearance", subtitle = "Theme mode and brand presentation.") {
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         ThemeChoice(label = "System", selected = settings.themeMode == ThemeMode.System, onClick = { appState.updateThemeMode(ThemeMode.System) })
-                        ThemeChoice(label = "Light",  selected = settings.themeMode == ThemeMode.Light,  onClick = { appState.updateThemeMode(ThemeMode.Light) })
-                        ThemeChoice(label = "Dark",   selected = settings.themeMode == ThemeMode.Dark,   onClick = { appState.updateThemeMode(ThemeMode.Dark) })
+                        ThemeChoice(label = "Light", selected = settings.themeMode == ThemeMode.Light, onClick = { appState.updateThemeMode(ThemeMode.Light) })
+                        ThemeChoice(label = "Dark", selected = settings.themeMode == ThemeMode.Dark, onClick = { appState.updateThemeMode(ThemeMode.Dark) })
                     }
                 }
             }
@@ -794,20 +787,20 @@ fun SettingsScreen(
             }
             item {
                 SectionCard(title = "Notifications", subtitle = "Daily reading and transit alerts.") {
-                    SettingSwitchRow(label = "Daily reading",  checked = settings.notifications.dailyReadingEnabled,       onCheckedChange = { appState.updateNotificationPreference(dailyReadingEnabled = it) })
-                    SettingSwitchRow(label = "Transit alerts", checked = settings.notifications.transitAlertsEnabled,      onCheckedChange = { appState.updateNotificationPreference(transitAlertsEnabled = it) })
+                    SettingSwitchRow(label = "Daily reading", checked = settings.notifications.dailyReadingEnabled, onCheckedChange = { appState.updateNotificationPreference(dailyReadingEnabled = it) })
+                    SettingSwitchRow(label = "Transit alerts", checked = settings.notifications.transitAlertsEnabled, onCheckedChange = { appState.updateNotificationPreference(transitAlertsEnabled = it) })
                     SettingSwitchRow(label = "Special events", checked = settings.notifications.specialEventAlertsEnabled, onCheckedChange = { appState.updateNotificationPreference(specialEventAlertsEnabled = it) })
-                    SettingSwitchRow(label = "Marketing",      checked = settings.notifications.marketingEnabled,          onCheckedChange = { appState.updateNotificationPreference(marketingEnabled = it) })
+                    SettingSwitchRow(label = "Marketing", checked = settings.notifications.marketingEnabled, onCheckedChange = { appState.updateNotificationPreference(marketingEnabled = it) })
                 }
             }
             item {
                 SectionCard(title = "Subscription", subtitle = "Current entitlement state.") {
                     Text(
                         text = when (subscription.tier) {
-                            SubscriptionTier.Free           -> "Free tier active"
+                            SubscriptionTier.Free -> "Free tier active"
                             SubscriptionTier.PremiumMonthly -> "Premium monthly active"
-                            SubscriptionTier.PremiumAnnual  -> "Premium annual active"
-                            SubscriptionTier.Lifetime       -> "Lifetime access active"
+                            SubscriptionTier.PremiumAnnual -> "Premium annual active"
+                            SubscriptionTier.Lifetime -> "Lifetime access active"
                         },
                         style = MaterialTheme.typography.titleMedium,
                     )
@@ -844,8 +837,8 @@ fun PaywallScreen(onBack: () -> Unit) {
                     FlowList(items = listOf("Extended transit range", "Detailed transit interpretations", "Compatibility depth", "Special events", "PDF export", "House systems"))
                 }
             }
-            item { PlanCard(title = "Monthly",  price = "$4.99",  description = "Good for trying the premium surface without a long commitment.") }
-            item { PlanCard(title = "Annual",   price = "$24.99", description = "Better for daily users who want the extended chart and report tools.") }
+            item { PlanCard(title = "Monthly", price = "$4.99", description = "Good for trying the premium surface without a long commitment.") }
+            item { PlanCard(title = "Annual", price = "$24.99", description = "Better for daily users who want the extended chart and report tools.") }
             item { PlanCard(title = "Lifetime", price = "$59.99", description = "One-time access for users who plan to keep a long-term chart history.") }
         }
     }
@@ -881,11 +874,7 @@ fun ProfileDetailScreen(
                     }
                 }
             }
-            item {
-                SectionCard(title = "Chart summary", subtitle = chart.summary?.headline ?: "Chart") {
-                    Text(chart.summary?.description ?: "", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-            }
+            item { SectionCard(title = "Chart summary", subtitle = chart.summary?.headline ?: "Chart") { Text(chart.summary?.description ?: "", color = MaterialTheme.colorScheme.onSurfaceVariant) } }
             item {
                 SectionCard(title = "Daily reading", subtitle = reading.date.toString()) {
                     Text(reading.headline, style = MaterialTheme.typography.titleMedium)
@@ -906,14 +895,14 @@ fun ProfileEditorScreen(
     val appState = LocalStellarPathAppState.current
     val source = if (profileId == "new") null else appState.profile(profileId)
 
-    var name        by rememberSaveable(profileId) { mutableStateOf(source?.displayName ?: "") }
-    var city        by rememberSaveable(profileId) { mutableStateOf(source?.location?.city ?: "") }
-    var region      by rememberSaveable(profileId) { mutableStateOf(source?.location?.region ?: "") }
-    var country     by rememberSaveable(profileId) { mutableStateOf(source?.location?.countryCode ?: "US") }
-    var birthDate   by rememberSaveable(profileId) { mutableStateOf(source?.birthDate?.toString() ?: "") }
-    var birthTime   by rememberSaveable(profileId) { mutableStateOf(source?.birthTime?.toString() ?: "") }
-    var timezone    by rememberSaveable(profileId) { mutableStateOf(source?.location?.timezoneId ?: "") }
-    var notes       by rememberSaveable(profileId) { mutableStateOf(source?.notes ?: "") }
+    var name by rememberSaveable(profileId) { mutableStateOf(source?.displayName ?: "") }
+    var city by rememberSaveable(profileId) { mutableStateOf(source?.location?.city ?: "") }
+    var region by rememberSaveable(profileId) { mutableStateOf(source?.location?.region ?: "") }
+    var country by rememberSaveable(profileId) { mutableStateOf(source?.location?.countryCode ?: "US") }
+    var birthDate by rememberSaveable(profileId) { mutableStateOf(source?.birthDate?.toString() ?: "") }
+    var birthTime by rememberSaveable(profileId) { mutableStateOf(source?.birthTime?.toString() ?: "") }
+    var timezone by rememberSaveable(profileId) { mutableStateOf(source?.location?.timezoneId ?: "") }
+    var notes by rememberSaveable(profileId) { mutableStateOf(source?.notes ?: "") }
     var unknownTime by rememberSaveable(profileId) { mutableStateOf(source?.birthTimePrecision == BirthTimePrecision.Unknown) }
     var profileType by rememberSaveable(profileId) { mutableStateOf(source?.profileType ?: ProfileType.Self) }
     var houseSystem by rememberSaveable(profileId) { mutableStateOf(source?.houseSystem ?: appState.settings().defaultHouseSystem) }
@@ -937,7 +926,7 @@ fun ProfileEditorScreen(
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedTextField(value = birthTime, onValueChange = { birthTime = it }, label = { Text("Birth time") }, modifier = Modifier.weight(1f), placeholder = { Text("HH:MM") }, enabled = !unknownTime)
-                        OutlinedTextField(value = timezone,  onValueChange = { timezone = it  }, label = { Text("Timezone") },   modifier = Modifier.weight(1f), placeholder = { Text("Region/City") })
+                        OutlinedTextField(value = timezone, onValueChange = { timezone = it }, label = { Text("Timezone") }, modifier = Modifier.weight(1f), placeholder = { Text("Region/City") })
                     }
                     Spacer(Modifier.height(12.dp))
                     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -946,8 +935,8 @@ fun ProfileEditorScreen(
                     }
                     Spacer(Modifier.height(12.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedTextField(value = city,    onValueChange = { city = it    }, label = { Text("City") },   modifier = Modifier.weight(1f))
-                        OutlinedTextField(value = region,  onValueChange = { region = it  }, label = { Text("Region") }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = city, onValueChange = { city = it }, label = { Text("City") }, modifier = Modifier.weight(1f))
+                        OutlinedTextField(value = region, onValueChange = { region = it }, label = { Text("Region") }, modifier = Modifier.weight(1f))
                     }
                     Spacer(Modifier.height(12.dp))
                     OutlinedTextField(value = country, onValueChange = { country = it }, label = { Text("Country code") }, modifier = Modifier.fillMaxWidth())
@@ -1044,13 +1033,20 @@ private fun AppScreenScaffold(
                 }),
             )
         },
-    ) { innerPadding -> content(innerPadding) }
+    ) { innerPadding ->
+        content(innerPadding)
+    }
 }
 
 // ─── Reusable components ──────────────────────────────────────────────────────
 
 @Composable
-private fun SectionCard(title: String, subtitle: String? = null, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+private fun SectionCard(
+    title: String,
+    subtitle: String? = null,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     ElevatedCard(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(28.dp)) {
         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -1067,7 +1063,9 @@ private fun ProfileChipRow(label: String?, selectedId: String, profiles: List<Bi
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (label != null) Text(label, style = MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            profiles.forEach { profile -> FilterChip(selected = profile.id == selectedId, onClick = { onSelect(profile.id) }, label = { Text(profile.displayName) }) }
+            profiles.forEach { profile ->
+                FilterChip(selected = profile.id == selectedId, onClick = { onSelect(profile.id) }, label = { Text(profile.displayName) })
+            }
         }
     }
 }
@@ -1077,7 +1075,9 @@ private fun ProfileSelectionPair(label: String, selectedId: String, profiles: Li
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(label, style = MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            profiles.forEach { profile -> FilterChip(selected = profile.id == selectedId, onClick = { onSelect(profile.id) }, label = { Text(profile.displayName) }) }
+            profiles.forEach { profile ->
+                FilterChip(selected = profile.id == selectedId, onClick = { onSelect(profile.id) }, label = { Text(profile.displayName) })
+            }
         }
     }
 }
@@ -1087,7 +1087,9 @@ private fun ProfileTypeRow(selected: ProfileType, onSelect: (ProfileType) -> Uni
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("Profile type", style = MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            ProfileType.entries.forEach { type -> FilterChip(selected = selected == type, onClick = { onSelect(type) }, label = { Text(type.name) }) }
+            ProfileType.entries.forEach { type ->
+                FilterChip(selected = selected == type, onClick = { onSelect(type) }, label = { Text(type.name) })
+            }
         }
     }
 }
@@ -1097,7 +1099,9 @@ private fun HouseSystemRow(selected: HouseSystem, onSelect: (HouseSystem) -> Uni
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text("House system", style = MaterialTheme.typography.labelLarge)
         Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            HouseSystem.entries.forEach { system -> FilterChip(selected = selected == system, onClick = { onSelect(system) }, label = { Text(system.name) }) }
+            HouseSystem.entries.forEach { system ->
+                FilterChip(selected = selected == system, onClick = { onSelect(system) }, label = { Text(system.name) })
+            }
         }
     }
 }
@@ -1332,10 +1336,11 @@ private fun PremiumBanner(title: String, description: String, onOpenPaywall: () 
 
 @Composable
 private fun BodyBadge(body: AstrologyBody, selected: Boolean) {
+    val color = if (selected) MaterialTheme.colorScheme.onPrimary else bodyColor(body)
     Surface(
         shape = CircleShape,
         color = if (selected) MaterialTheme.colorScheme.primary else bodyColor(body).copy(alpha = 0.15f),
-        contentColor = if (selected) MaterialTheme.colorScheme.onPrimary else bodyColor(body),
+        contentColor = color,
         modifier = Modifier.size(42.dp),
     ) {
         Box(contentAlignment = Alignment.Center) {
@@ -1380,25 +1385,25 @@ private fun ChartWheel(
 ) {
     val textMeasurer = rememberTextMeasurer()
     val transitPlacements = if (transitMode) chart.transitPlacements ?: emptyList() else emptyList()
-    val transitAspects    = if (transitMode) chart.transitAspects    ?: emptyList() else emptyList()
+    val transitAspects = if (transitMode) chart.transitAspects ?: emptyList() else emptyList()
     val hasTransit = transitPlacements.isNotEmpty()
 
     BoxWithConstraints(modifier = modifier, contentAlignment = Alignment.Center) {
         val density = LocalDensity.current
-        val primaryColor         = MaterialTheme.colorScheme.primary
-        val secondaryColor       = MaterialTheme.colorScheme.secondary
-        val tertiaryColor        = MaterialTheme.colorScheme.tertiary
+        val primaryColor = MaterialTheme.colorScheme.primary
+        val secondaryColor = MaterialTheme.colorScheme.secondary
+        val tertiaryColor = MaterialTheme.colorScheme.tertiary
         val onSurfaceVariantColor = MaterialTheme.colorScheme.onSurfaceVariant
-        val surfaceColor         = MaterialTheme.colorScheme.surface
-        val widthPx  = with(density) { maxWidth.toPx() }
+        val surfaceColor = MaterialTheme.colorScheme.surface
+        val widthPx = with(density) { maxWidth.toPx() }
         val heightPx = with(density) { maxHeight.toPx() }
-        val wheelRadius    = (min(widthPx, heightPx) / 2f) * 0.78f
-        val natalRadius    = wheelRadius * (if (hasTransit) 0.60f else 0.82f)
-        val transitRadius  = wheelRadius * 0.88f
-        val labelRadius    = wheelRadius * 0.96f
-        val nodeSize       = if (hasTransit) 30.dp else 42.dp
+        val wheelRadius = (min(widthPx, heightPx) / 2f) * 0.78f
+        val natalRadius = wheelRadius * (if (hasTransit) 0.60f else 0.82f)
+        val transitRadius = wheelRadius * 0.88f
+        val labelRadius = wheelRadius * 0.96f
+        val nodeSize = if (hasTransit) 30.dp else 42.dp
         val transitNodeSize = 26.dp
-        val nodeSizePx       = with(density) { nodeSize.toPx() }
+        val nodeSizePx = with(density) { nodeSize.toPx() }
         val transitNodeSizePx = with(density) { transitNodeSize.toPx() }
         val centerX = widthPx / 2f
         val centerY = heightPx / 2f
@@ -1410,7 +1415,7 @@ private fun ChartWheel(
                     var closest: AstrologyBody? = null
                     var closestDist = Float.MAX_VALUE
                     val hitTargets = if (hasTransit) transitPlacements else chart.placements
-                    val hitR    = if (hasTransit) transitNodeSizePx else nodeSizePx
+                    val hitR = if (hasTransit) transitNodeSizePx else nodeSizePx
                     val hitRing = if (hasTransit) transitRadius else natalRadius
                     hitTargets.forEach { placement ->
                         val angle = placementAngle(placement)
@@ -1420,6 +1425,7 @@ private fun ChartWheel(
                         val dist = kotlin.math.sqrt((tapOffset.x - px) * (tapOffset.x - px) + (tapOffset.y - py) * (tapOffset.y - py))
                         if (dist < closestDist && dist < hitR) { closestDist = dist; closest = placement.body }
                     }
+                    // Also allow tapping natal ring in transit mode
                     if (hasTransit && closest == null) {
                         chart.placements.forEach { placement ->
                             val angle = placementAngle(placement)
@@ -1438,8 +1444,8 @@ private fun ChartWheel(
 
             drawCircle(color = primaryColor.copy(alpha = 0.10f), radius = wheelRadius, center = center, style = Stroke(width = 3.dp.toPx()))
             if (hasTransit) {
-                drawCircle(color = secondaryColor.copy(alpha = 0.10f), radius = transitRadius,       center = center, style = Stroke(width = 1.5f.dp.toPx()))
-                drawCircle(color = tertiaryColor.copy(alpha = 0.08f),  radius = natalRadius * 1.05f, center = center, style = Stroke(width = 1.dp.toPx()))
+                drawCircle(color = secondaryColor.copy(alpha = 0.10f), radius = transitRadius, center = center, style = Stroke(width = 1.5f.dp.toPx()))
+                drawCircle(color = tertiaryColor.copy(alpha = 0.08f), radius = natalRadius * 1.05f, center = center, style = Stroke(width = 1.dp.toPx()))
             }
 
             repeat(12) { index ->
@@ -1447,23 +1453,21 @@ private fun ChartWheel(
                 drawLine(
                     color = onSurfaceVariantColor.copy(alpha = 0.12f),
                     start = Offset(center.x + cos(angle).toFloat() * natalRadius, center.y + sin(angle).toFloat() * natalRadius),
-                    end   = Offset(center.x + cos(angle).toFloat() * wheelRadius,  center.y + sin(angle).toFloat() * wheelRadius),
+                    end = Offset(center.x + cos(angle).toFloat() * wheelRadius, center.y + sin(angle).toFloat() * wheelRadius),
                     strokeWidth = 1.dp.toPx(),
                 )
                 val labelAngle = Math.toRadians((index * 30.0))
                 val lx = center.x + cos(labelAngle).toFloat() * labelRadius
                 val ly = center.y + sin(labelAngle).toFloat() * labelRadius
-                val textResult = textMeasurer.measure(
-                    text = signNames[index],
-                    style = TextStyle(fontSize = 9.sp, color = onSurfaceVariantColor.copy(alpha = 0.5f)),
-                )
+                val textResult = textMeasurer.measure(text = signNames[index], style = TextStyle(fontSize = 9.sp, color = onSurfaceVariantColor.copy(alpha = 0.5f)))
                 drawText(textLayoutResult = textResult, topLeft = Offset(lx - textResult.size.width / 2f, ly - textResult.size.height / 2f))
             }
 
+            // Transit aspects — dashed
             if (hasTransit) {
                 transitAspects.forEach { aspect ->
                     val src = transitPlacements.firstOrNull { it.body == aspect.source } ?: return@forEach
-                    val tgt = chart.placements.firstOrNull { it.body == aspect.target }  ?: return@forEach
+                    val tgt = chart.placements.firstOrNull { it.body == aspect.target } ?: return@forEach
                     val srcRad = Math.toRadians((placementAngle(src) - 90.0))
                     val tgtRad = Math.toRadians((placementAngle(tgt) - 90.0))
                     val sx = center.x + cos(srcRad).toFloat() * transitRadius
@@ -1480,6 +1484,7 @@ private fun ChartWheel(
                 }
             }
 
+            // Natal aspects — solid
             chart.aspects.forEach { aspect ->
                 val src = chart.placements.firstOrNull { it.body == aspect.source } ?: return@forEach
                 val tgt = chart.placements.firstOrNull { it.body == aspect.target } ?: return@forEach
@@ -1500,6 +1505,7 @@ private fun ChartWheel(
             drawCircle(color = surfaceColor, radius = if (hasTransit) natalRadius * 0.30f else wheelRadius * 0.30f, center = center)
         }
 
+        // Natal planet nodes
         chart.placements.forEach { placement ->
             val angle = placementAngle(placement)
             val rad = Math.toRadians((angle - 90.0))
@@ -1524,6 +1530,7 @@ private fun ChartWheel(
             }
         }
 
+        // Transit planet nodes (outlined ring style)
         if (hasTransit) {
             transitPlacements.forEach { placement ->
                 val angle = placementAngle(placement)
@@ -1532,7 +1539,8 @@ private fun ChartWheel(
                 val y = centerY + sin(rad).toFloat() * transitRadius
                 val selected = placement.body == selectedBody
                 val col = bodyColor(placement.body)
-                val tnszPx = with(density) { transitNodeSize.toPx() }
+                val tnsz = transitNodeSize
+                val tnszPx = with(density) { tnsz.toPx() }
                 Surface(
                     shape = CircleShape,
                     color = if (selected) col.copy(alpha = 0.9f) else Color.Transparent,
@@ -1540,7 +1548,7 @@ private fun ChartWheel(
                     border = if (selected) null else BorderStroke(1.5.dp, col.copy(alpha = 0.7f)),
                     modifier = Modifier
                         .offset { IntOffset((x - tnszPx / 2f).roundToInt(), (y - tnszPx / 2f).roundToInt()) }
-                        .size(transitNodeSize)
+                        .size(tnsz)
                         .clickable { onPlacementSelected(placement.body) },
                 ) {
                     Box(contentAlignment = Alignment.Center) {
@@ -1550,6 +1558,7 @@ private fun ChartWheel(
             }
         }
 
+        // Center label
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surface,
@@ -1573,22 +1582,22 @@ private fun ChartWheel(
 private data class ActionTileData(val title: String, val subtitle: String, val onClick: () -> Unit)
 
 private fun bodyAbbreviation(body: AstrologyBody): String = when (body) {
-    AstrologyBody.Sun       -> "Sun";  AstrologyBody.Moon      -> "Moon"; AstrologyBody.Mercury   -> "Mer"
-    AstrologyBody.Venus     -> "Ven";  AstrologyBody.Mars      -> "Mar";  AstrologyBody.Jupiter   -> "Jup"
-    AstrologyBody.Saturn    -> "Sat";  AstrologyBody.Uranus    -> "Ura";  AstrologyBody.Neptune   -> "Nep"
-    AstrologyBody.Pluto     -> "Plu";  AstrologyBody.NorthNode -> "NN";   AstrologyBody.SouthNode -> "SN"
-    AstrologyBody.Chiron    -> "Chi";  AstrologyBody.Lilith    -> "Lil"
-    AstrologyBody.Ascendant -> "Asc";  AstrologyBody.Midheaven -> "MC"
+    AstrologyBody.Sun -> "Sun"; AstrologyBody.Moon -> "Moon"; AstrologyBody.Mercury -> "Mer"
+    AstrologyBody.Venus -> "Ven"; AstrologyBody.Mars -> "Mar"; AstrologyBody.Jupiter -> "Jup"
+    AstrologyBody.Saturn -> "Sat"; AstrologyBody.Uranus -> "Ura"; AstrologyBody.Neptune -> "Nep"
+    AstrologyBody.Pluto -> "Plu"; AstrologyBody.NorthNode -> "NN"; AstrologyBody.SouthNode -> "SN"
+    AstrologyBody.Chiron -> "Chi"; AstrologyBody.Lilith -> "Lil"
+    AstrologyBody.Ascendant -> "Asc"; AstrologyBody.Midheaven -> "MC"
 }
 
 private fun bodyColor(body: AstrologyBody): Color = when (body) {
-    AstrologyBody.Sun       -> Color(0xFFF7B500); AstrologyBody.Moon      -> Color(0xFF8FC7FF)
-    AstrologyBody.Mercury   -> Color(0xFF4FC3B3); AstrologyBody.Venus     -> Color(0xFFE48FB1)
-    AstrologyBody.Mars      -> Color(0xFFFF8A65); AstrologyBody.Jupiter   -> Color(0xFF7E57C2)
-    AstrologyBody.Saturn    -> Color(0xFF90A4AE); AstrologyBody.Uranus    -> Color(0xFF4DB6AC)
-    AstrologyBody.Neptune   -> Color(0xFF64B5F6); AstrologyBody.Pluto     -> Color(0xFF9575CD)
+    AstrologyBody.Sun -> Color(0xFFF7B500); AstrologyBody.Moon -> Color(0xFF8FC7FF)
+    AstrologyBody.Mercury -> Color(0xFF4FC3B3); AstrologyBody.Venus -> Color(0xFFE48FB1)
+    AstrologyBody.Mars -> Color(0xFFFF8A65); AstrologyBody.Jupiter -> Color(0xFF7E57C2)
+    AstrologyBody.Saturn -> Color(0xFF90A4AE); AstrologyBody.Uranus -> Color(0xFF4DB6AC)
+    AstrologyBody.Neptune -> Color(0xFF64B5F6); AstrologyBody.Pluto -> Color(0xFF9575CD)
     AstrologyBody.NorthNode -> Color(0xFF81C784); AstrologyBody.SouthNode -> Color(0xFFEF9A9A)
-    AstrologyBody.Chiron    -> Color(0xFFA1887F); AstrologyBody.Lilith    -> Color(0xFFBA68C8)
+    AstrologyBody.Chiron -> Color(0xFFA1887F); AstrologyBody.Lilith -> Color(0xFFBA68C8)
     AstrologyBody.Ascendant -> Color(0xFF26A69A); AstrologyBody.Midheaven -> Color(0xFFFFB74D)
 }
 
@@ -1598,11 +1607,11 @@ private fun placementAngle(placement: ChartPlacement): Float =
 private fun formatDegree(value: Double): String = String.format(Locale.US, "%.1f°", value)
 
 private fun houseSystemDescription(houseSystem: HouseSystem): String = when (houseSystem) {
-    HouseSystem.Placidus      -> "Default time-based division used by many readers."
-    HouseSystem.WholeSign     -> "Each sign becomes a full house."
-    HouseSystem.Koch          -> "Dynamic time-based segmentation with a different emphasis curve."
-    HouseSystem.Equal         -> "Twelve equal slices from the ascendant."
-    HouseSystem.Campanus      -> "Spatial division focused on local horizon geometry."
-    HouseSystem.Porphyry      -> "Divides the quadrant into three equal parts."
+    HouseSystem.Placidus -> "Default time-based division used by many readers."
+    HouseSystem.WholeSign -> "Each sign becomes a full house."
+    HouseSystem.Koch -> "Dynamic time-based segmentation with a different emphasis curve."
+    HouseSystem.Equal -> "Twelve equal slices from the ascendant."
+    HouseSystem.Campanus -> "Spatial division focused on local horizon geometry."
+    HouseSystem.Porphyry -> "Divides the quadrant into three equal parts."
     HouseSystem.Regiomontanus -> "Traditional angular house division."
 }
