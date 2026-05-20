@@ -176,8 +176,8 @@ fun OnboardingScreen(
                 }
             }
             item {
-                SectionCard(title = "What you can do here", subtitle = "Daily reading, transits, compatibility, reports, widgets, and reference content.") {
-                    FlowList(items = listOf("Natal chart", "Transit timeline", "Compatibility", "PDF report", "Widget support", "Special events"))
+                SectionCard(title = "What you can do here", subtitle = "Daily reading, transits, compatibility, reports, and reference content.") {
+                    FlowList(items = listOf("Natal chart", "Transit timeline", "Compatibility", "PDF report", "Special events", "Reference library"))
                 }
             }
             item {
@@ -205,7 +205,7 @@ fun HomeScreen(
     val profile = appState.activeProfile()
     val reading = appState.reading(profile.id)
     val chart = appState.chart(profile.id)
-    val event = appState.specialEvents().first()
+    val event = appState.specialEvents().minByOrNull { it.date } ?: appState.specialEvents().first()
     val profiles = appState.profiles()
 
     AppScreenScaffold(title = "Home") { innerPadding ->
@@ -976,10 +976,10 @@ fun ReportPreviewScreen(
         ) {
             item { SectionCard(title = "Preview", subtitle = "PDF-ready layout") { ReportPreviewCard(profile = profile, reading = reading, chart = chart) } }
             item {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    OutlinedButton(onClick = onShare, modifier = Modifier.weight(1f)) { Text("Share") }
-                    Button(onClick = onExportPdf, modifier = Modifier.weight(1f)) { Text("Export PDF") }
-                }
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        OutlinedButton(onClick = onShare, enabled = false, modifier = Modifier.weight(1f)) { Text("Share") }
+                        Button(onClick = onExportPdf, enabled = false, modifier = Modifier.weight(1f)) { Text("Export PDF") }
+                    }
             }
         }
     }
@@ -1318,7 +1318,7 @@ private fun PlanCard(title: String, price: String, description: String) {
             Text(title, style = MaterialTheme.typography.titleLarge)
             Text(price, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text(description, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Button(onClick = {}) { Text("Choose plan") }
+            Button(onClick = {}, enabled = false) { Text("Choose plan") }
         }
     }
 }

@@ -55,7 +55,7 @@ fun AppNavGraph(
         composable(Routes.Onboarding) {
             OnboardingScreen(
                 onCreateProfile = {
-                    navController.navigate(Routes.Home) {
+                    navController.navigate(Routes.profileEditor()) {
                         popUpTo(Routes.Onboarding) { inclusive = true }
                     }
                 },

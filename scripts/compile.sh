@@ -13,7 +13,7 @@
 # Requirements:
 #   • JDK 17 on PATH  (java -version should report 17.x)
 #   • ANDROID_HOME set, or Android Studio SDK installed at default location
-#   • Run from the repo root: cd /sdcard/git/androidfuture && ./scripts/compile.sh
+#   • Run from the repo root: cd /sdcard/codex/astroqwen && ./scripts/compile.sh
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
@@ -94,12 +94,12 @@ if [[ ! -f gradle/wrapper/gradle-wrapper.jar ]]; then
   warn "gradle-wrapper.jar is missing."
   if command -v gradle &>/dev/null; then
     info "Regenerating via system gradle..."
-    gradle wrapper --gradle-version 8.11.1 --distribution-type bin
+    gradle wrapper --gradle-version 9.3.1 --distribution-type bin
     success "gradle-wrapper.jar regenerated."
   else
     fail "gradle-wrapper.jar missing and no system 'gradle' found to regenerate it.\n\
 Download it from:\n\
-  https://github.com/gradle/gradle/raw/v8.11.1/gradle/wrapper/gradle-wrapper.jar\n\
+  https://github.com/gradle/gradle/raw/v9.3.1/gradle/wrapper/gradle-wrapper.jar\n\
 Place it at: gradle/wrapper/gradle-wrapper.jar"
   fi
 fi
