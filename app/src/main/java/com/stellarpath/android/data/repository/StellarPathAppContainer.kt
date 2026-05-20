@@ -1,6 +1,8 @@
 package com.stellarpath.android.data.repository
 
 import android.content.Context
+import com.stellarpath.android.data.ephemeris.AstroCalculationEngine
+import com.stellarpath.android.data.ephemeris.SwissEphemerisAstroCalculationEngine
 import com.stellarpath.android.data.local.StellarPathDatabase
 
 class StellarPathAppContainer(
@@ -18,5 +20,9 @@ class StellarPathAppContainer(
 
     val settingsRepository: SettingsRepository by lazy {
         DataStoreSettingsRepository(appContext)
+    }
+
+    val astroEngine: AstroCalculationEngine by lazy {
+        SwissEphemerisAstroCalculationEngine(appContext)
     }
 }

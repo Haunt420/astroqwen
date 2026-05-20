@@ -41,6 +41,7 @@ dependencies {
     // Room 2.7.0 — first stable release with KSP 2.x support.
     // 2.6.1 + KSP 2.x causes "unexpected jvm signature V" crash.
     val roomVersion = "2.7.0"
+    implementation(files("libs/jswisseph-core.jar"))
     val composeBom = platform("androidx.compose:compose-bom:2024.12.01")
     implementation(composeBom)
     androidTestImplementation(composeBom)

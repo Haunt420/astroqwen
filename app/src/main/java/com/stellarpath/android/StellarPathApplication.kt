@@ -17,6 +17,10 @@ class StellarPathApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         appContainer = StellarPathAppContainer(applicationContext)
+        SampleAstroData.configure(appContainer.astroEngine)
+        applicationScope.launch {
+            appContainer.astroEngine.warmUp()
+        }
         applicationScope.launch {
             appContainer.profileRepository.seedIfEmpty(SampleAstroData.profiles)
         }
